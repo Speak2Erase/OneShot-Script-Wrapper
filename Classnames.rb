@@ -173,7 +173,15 @@ module RPG
     def _dump
       dump = { code: @code,
                indent: @indent,
-               parameters: @parameters }
+               parameters: [] }
+      for i in 0..(@parameters.length - 1)
+        if @parameters[i].to_s.match(/#<RPG::/)
+          dump[:parameters] << @parameters[i]._dump
+        else
+          dump[:parameters] << @parameters[i]
+        end
+      end
+      dump
     end
   end
 
@@ -211,6 +219,16 @@ module RPG
         expanded: @expanded,
         scroll_x: @scroll_x,
         scroll_y: @scroll_y,
+      }
+    end
+  end
+
+  class AudioFile
+    def _dump
+      dump = {
+        name: @name,
+        volume: @volume,
+        pitch: @pitch,
       }
     end
   end
