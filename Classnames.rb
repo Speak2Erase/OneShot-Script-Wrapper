@@ -73,8 +73,10 @@ class Table
     end
   end
 
-  def _dump(limit)
-    [@num_of_dimensions, @xsize, @ysize, @zsize, @num_of_elements, *@elements.flatten].pack("VVVVVv*")
+  def _dump
+    dump = { dimensions: @num_of_dimensions, width: @xsize, height: @ysize, depth: @zsize, size: @num_of_elements, elements: [] } #.pack("VVVVVv*")
+    dump[:elements] = *@elements
+    return dump
   end
 
   def self._load(obj)
@@ -95,5 +97,10 @@ class Tone
 
   def self._load(obj)
     Tone.new(*obj.unpack("EEEE"))
+  end
+end
+
+class RPG::Event
+  def _dump
   end
 end

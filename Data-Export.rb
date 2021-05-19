@@ -25,7 +25,7 @@ paths.each_with_index do |path, i|
     content = rxdata.sort_by { |key| key }.to_h
   when /^Map\d+$/
     content[:events] = rxdata.instance_variable_get(:@events).sort_by { |key| key }.to_h
-    content[:data] = rxdata.instance_variable_get(:@data) #._dump nil
+    content[:data] = rxdata.instance_variable_get(:@data)._dump
     content[:autoplay_bgm] = rxdata.instance_variable_get(:@autoplay_bgm)
     content[:autoplay_bgs] = rxdata.instance_variable_get(:@autoplay_bgs)
     content[:bgm] = rxdata.instance_variable_get(:@bgm)
