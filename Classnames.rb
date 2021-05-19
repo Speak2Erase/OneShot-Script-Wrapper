@@ -226,8 +226,16 @@ module RPG
     def _dump
       dump = {
         code: @code,
-        parameters: @parameters,
+        parameters: [],
       }
+      for i in 0..(@parameters.length - 1)
+        if @parameters[i].to_s.match(/#<RPG::/) || @parameters[i].to_s.match(/#<Tone:/) || @parameters[i].to_s.match(/#<Color:/) || @parameters[i].to_s.match(/#<Table:/)
+          dump[:parameters] << @parameters[i]._dump
+        else
+          dump[:parameters] << @parameters[i]
+        end
+      end
+      dump
     end
   end
 

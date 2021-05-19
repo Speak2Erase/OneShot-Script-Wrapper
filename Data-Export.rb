@@ -36,8 +36,8 @@ paths.each_with_index do |path, i|
     content[:data] = rxdata.instance_variable_get(:@data)._dump
     content[:autoplay_bgm] = rxdata.instance_variable_get(:@autoplay_bgm)
     content[:autoplay_bgs] = rxdata.instance_variable_get(:@autoplay_bgs)
-    content[:bgm] = rxdata.instance_variable_get(:@bgm)
-    content[:bgs] = rxdata.instance_variable_get(:@bgs)
+    content[:bgm] = rxdata.instance_variable_get(:@bgm)._dump
+    content[:bgs] = rxdata.instance_variable_get(:@bgs)._dump
     content[:encounter_list] = rxdata.instance_variable_get(:@encounter_list)
     content[:encounter_step] = rxdata.instance_variable_get(:@encounter_step)
     content[:height] = rxdata.instance_variable_get(:@height)
