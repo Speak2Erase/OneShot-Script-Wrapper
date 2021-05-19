@@ -11,13 +11,13 @@ puts "exporting..."
 Dir.mkdir "Data_JSON" unless Dir.exists? "Data_JSON"
 paths = Pathname.glob(("Data/" + ("*" + ".rxdata")))
 count = paths.size
-#progress = ProgressBar.create(format: "%a |%b>>%i| %p%% %t", starting_at: 0, total: count, output: $stderr)
+progress = ProgressBar.create(format: "%a |%b>>%i| %p%% %t", starting_at: 0, total: count, output: $stderr)
 paths.each_with_index do |path, i|
   content = Hash.new
 
   name = path.basename(".rxdata")
   rxdata = Marshal.load(path.read(mode: "rb"))
-  puts name.to_s
+  #puts name.to_s
   case name.to_s
 
   when "Scripts"
@@ -45,9 +45,12 @@ paths.each_with_index do |path, i|
     content[:tileset_id] = rxdata.instance_variable_get(:@tileset_id)
   else
   end
-  json = File.open("Data_JSON/" + name.sub_ext(".json").to_s, "w")
+
+  json = File.open("Data_JSON/" + name.sub_ext(".json").to_s, "wb")
   #puts content
   json.puts JSON.pretty_generate(content)
+
+  progress.increment
 end
 puts
 puts "export completed."

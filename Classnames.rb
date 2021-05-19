@@ -5,8 +5,13 @@ class Color
     @red, @green, @blue, @alpha = red, green, blue, alpha
   end
 
-  def _dump(limit)
-    [@red, @green, @blue, @alpha].pack("EEEE")
+  def _dump
+    dump = {
+      red: @red,
+      green: @green,
+      blue: @blue,
+      alpha: @alpha,
+    }
   end
 
   def self._load(obj)
@@ -74,7 +79,14 @@ class Table
   end
 
   def _dump
-    dump = { dimensions: @num_of_dimensions, width: @xsize, height: @ysize, depth: @zsize, size: @num_of_elements, elements: [] } #.pack("VVVVVv*")
+    dump = {
+      dimensions: @num_of_dimensions,
+      width: @xsize,
+      height: @ysize,
+      depth: @zsize,
+      size: @num_of_elements,
+      elements: [],
+    } #.pack("VVVVVv*")
     dump[:elements] = *@elements
     return dump
   end
@@ -91,8 +103,13 @@ class Tone
     @red, @green, @blue, @gray = red, green, blue, gray
   end
 
-  def _dump(limit)
-    [@red, @green, @blue, @gray].pack("EEEE")
+  def _dump
+    dump = {
+      red: @red,
+      green: @green,
+      blue: @blue,
+      gray: @gray,
+    }
   end
 
   def self._load(obj)
@@ -103,11 +120,13 @@ end
 module RPG
   class Event
     def _dump
-      dump = { id: @id,
-               name: @name,
-               x: @x,
-               y: @y,
-               pages: [] }
+      dump = {
+        id: @id,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
+        x: @x,
+        y: @y,
+        pages: [],
+      }
       for i in 0..(@pages.size - 1)
         dump[:pages] << @pages[i]._dump
       end
@@ -116,18 +135,20 @@ module RPG
 
     class Page
       def _dump
-        dump = { condition: "",
-                 graphic: "",
-                 move_type: @move_type,
-                 move_speed: @move_speed,
-                 move_frequency: @move_frequency,
-                 move_route: "",
-                 walk_anime: @walk_anime,
-                 step_anime: @step_anime,
-                 through: @through,
-                 always_on_top: @always_on_top,
-                 trigger: @trigger,
-                 list: [] }
+        dump = {
+          condition: "",
+          graphic: "",
+          move_type: @move_type,
+          move_speed: @move_speed,
+          move_frequency: @move_frequency,
+          move_route: "",
+          walk_anime: @walk_anime,
+          step_anime: @step_anime,
+          through: @through,
+          always_on_top: @always_on_top,
+          trigger: @trigger,
+          list: [],
+        }
         for i in 0..(@list.size - 1)
           dump[:list] << @list[i]._dump
         end
@@ -175,8 +196,10 @@ module RPG
                indent: @indent,
                parameters: [] }
       for i in 0..(@parameters.length - 1)
-        if @parameters[i].to_s.match(/#<RPG::/)
+        if @parameters[i].to_s.match(/#<RPG::/) || @parameters[i].to_s.match(/#<Tone:/) || @parameters[i].to_s.match(/#<Color:/) || @parameters[i].to_s.match(/#<Table:/)
           dump[:parameters] << @parameters[i]._dump
+        elsif @parameters[i].is_a? String
+          dump[:parameters] << @parameters[i].force_encoding("iso-8859-1").encode("utf-8")
         else
           dump[:parameters] << @parameters[i]
         end
@@ -213,7 +236,7 @@ module RPG
 
     def _dump
       dump = {
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         parent_id: @parent_id,
         order: @order,
         expanded: @expanded,
@@ -226,7 +249,7 @@ module RPG
   class AudioFile
     def _dump
       dump = {
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         volume: @volume,
         pitch: @pitch,
       }
