@@ -100,7 +100,118 @@ class Tone
   end
 end
 
-class RPG::Event
-  def _dump
+module RPG
+  class Event
+    def _dump
+      dump = { id: @id,
+               name: @name,
+               x: @x,
+               y: @y,
+               pages: [] }
+      for i in 0..(@pages.size - 1)
+        dump[:pages] << @pages[i]._dump
+      end
+      return dump
+    end
+
+    class Page
+      def _dump
+        dump = { condition: "",
+                 graphic: "",
+                 move_type: @move_type,
+                 move_speed: @move_speed,
+                 move_frequency: @move_frequency,
+                 move_route: "",
+                 walk_anime: @walk_anime,
+                 step_anime: @step_anime,
+                 through: @through,
+                 always_on_top: @always_on_top,
+                 trigger: @trigger,
+                 list: [] }
+        for i in 0..(@list.size - 1)
+          dump[:list] << @list[i]._dump
+        end
+        dump[:condition] = @condition._dump
+        dump[:graphic] = @graphic._dump
+        dump[:move_route] = @move_route._dump
+        return dump
+      end
+
+      class Condition
+        def _dump
+          dump = {
+            switch1_valid: @switch1_valid,
+            switch2_valid: @switch2_valid,
+            variable_valid: @variable_valid,
+            self_switch_valid: @self_switch_valid,
+            switch1_id: @switch1_id,
+            switch2_id: @switch2_id,
+            variable_id: @variable_id,
+            variable_value: @variable_value,
+            self_switch_ch: @self_switch_ch,
+          }
+        end
+      end
+
+      class Graphic
+        def _dump
+          dump = {
+            tile_id: @tile_id,
+            character_name: @character_name,
+            character_hue: @character_hue,
+            direction: @direction,
+            pattern: @pattern,
+            opacity: @opacity,
+            blend_type: @blend_type,
+          }
+        end
+      end
+    end
+  end
+
+  class EventCommand
+    def _dump
+      dump = { code: @code,
+               indent: @indent,
+               parameters: @parameters }
+    end
+  end
+
+  class MoveRoute
+    def _dump
+      dump = {
+        repeat: @repeat,
+        skippable: @skippable,
+        list: [],
+      }
+      for i in 0..(@list.length - 1)
+        dump[:list] << @list[i]._dump
+      end
+      return dump
+    end
+  end
+
+  class MoveCommand
+    def _dump
+      dump = {
+        code: @code,
+        parameters: @parameters,
+      }
+    end
+  end
+
+  class MapInfo
+    attr_accessor :parent_id
+
+    def _dump
+      dump = {
+        name: @name,
+        parent_id: @parent_id,
+        order: @order,
+        expanded: @expanded,
+        scroll_x: @scroll_x,
+        scroll_y: @scroll_y,
+      }
+    end
   end
 end

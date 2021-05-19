@@ -22,9 +22,17 @@ paths.each_with_index do |path, i|
 
   when "Scripts"
   when "MapInfos"
-    content = rxdata.sort_by { |key| key }.to_h
+    content = {}
+    mapinfos = rxdata.sort_by { |key, value| value.parent_id }.to_h
+    mapinfos.each do |key, value|
+      content[key] = value._dump
+    end
   when /^Map\d+$/
-    content[:events] = rxdata.instance_variable_get(:@events).sort_by { |key| key }.to_h
+    content[:events] = {}
+    events = (rxdata.instance_variable_get(:@events).sort_by { |key| key }.to_h)
+    events.each do |key, value|
+      content[:events][key] = value._dump
+    end
     content[:data] = rxdata.instance_variable_get(:@data)._dump
     content[:autoplay_bgm] = rxdata.instance_variable_get(:@autoplay_bgm)
     content[:autoplay_bgs] = rxdata.instance_variable_get(:@autoplay_bgs)
