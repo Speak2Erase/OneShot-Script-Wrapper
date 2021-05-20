@@ -21,6 +21,11 @@ paths.each_with_index do |path, i|
   case name.to_s
   when "xScripts"
   when "Scripts"
+  when "Armors"
+    content[:armors] = []
+    rxdata.each_with_index do |value|
+      content[:armors] << value._dump unless value == nil
+    end
   when "Weapons"
     content[:weapons] = []
     rxdata.each_with_index do |value|

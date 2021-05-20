@@ -572,4 +572,26 @@ module RPG
       }
     end
   end
+
+  class Armor
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        icon_name: @icon_name,
+        description: @description,
+        kind: @kind,
+        price: @price,
+        pdef: @pdef,
+        mdef: @mdef,
+        eva: @eva,
+        str_plus: @str_plus,
+        dex_plus: @dex_plus,
+        agi_plus: @agi_plus,
+        int_plus: @int_plus,
+        guard_element_set: @guard_element_set,
+        guard_state_set: @guard_state_set,
+      }
+    end
+  end
 end
