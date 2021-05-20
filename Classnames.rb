@@ -17,6 +17,10 @@ class Color
     }
   end
 
+  def _dump(limit)
+    [@red, @green, @blue, @alpha].pack("EEEE")
+  end
+
   def self._load(obj)
     data = *obj.unpack("EEEE")
     s_hash = {
@@ -112,6 +116,10 @@ class Table
     dump
   end
 
+  def _dump(limit)
+    [@num_of_dimensions, @xsize, @ysize, @zsize, @num_of_elements, *@elements.flatten].pack("VVVVVv*")
+  end
+
   def self._load(obj)
     data = obj.unpack("VVVVVv*")
     @num_of_dimensions, @xsize, @ysize, @zsize, @num_of_elements, *@elements = *data
@@ -150,6 +158,10 @@ class Tone
       blue: @blue,
       gray: @gray,
     }
+  end
+
+  def _dump(limit)
+    [@red, @green, @blue, @gray].pack("EEEE")
   end
 
   def self._load(obj)
