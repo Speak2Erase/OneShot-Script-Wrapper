@@ -51,7 +51,6 @@ paths.each_with_index do |path, i|
   end
 
   rxdata = File.open("Data_Test/" + name.sub_ext(".rxdata").to_s, "wb")
-  puts content
   rxdata.puts Marshal.dump(content)
 
   progress.increment
