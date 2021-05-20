@@ -7,11 +7,21 @@ require "fileutils"
 require "pathname"
 require_relative "Classnames"
 
-puts "exporting..."
+progress = ProgressBar.create(
+  format: "%a /%e |%B| %p%% %c/%C %r files/sec %t",
+  starting_at: 0,
+  total: nil,
+  output: $stderr,
+  length: 150,
+  title: "Exported",
+  remainder_mark: "\e[0;30m█\e[0m",
+  progress_mark: "█",
+  unknown_progress_animation_steps: ["==>", ">==", "=>="],
+)
 Dir.mkdir "Data_JSON" unless Dir.exists? "Data_JSON"
 paths = Pathname.glob(("Data/" + ("*" + ".rxdata")))
 count = paths.size
-progress = ProgressBar.create(format: "%a |%b>>%i| %p%% %t", starting_at: 0, total: count, output: $stderr)
+progress.total = count
 paths.each_with_index do |path, i|
   content = Hash.new
 
@@ -107,5 +117,3 @@ paths.each_with_index do |path, i|
 
   progress.increment
 end
-puts
-puts "export completed."
