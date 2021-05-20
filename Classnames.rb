@@ -956,6 +956,12 @@ module RPG
   end
 
   class Armor
+    def initialize(hash)
+      hash.each do |key, value|
+        eval("@#{key.to_s}=value")
+      end
+    end
+
     def hash
       dump = {
         id: @id,

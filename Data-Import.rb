@@ -83,6 +83,11 @@ paths.each_with_index do |path, i|
     json["weapons"].each_with_index do |value|
       content << RPG::Weapon.new(value)
     end
+  when "Armors"
+    content = [nil]
+    json["armors"].each_with_index do |value|
+      content << RPG::Armor.new(value)
+    end
   end
 
   rxdata = File.open("Data_Test/" + name.sub_ext(".rxdata").to_s, "wb")
