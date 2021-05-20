@@ -804,6 +804,16 @@ module RPG
   end
 
   class Actor
+    def initialize(hash)
+      hash.each do |key, value|
+        if value.is_a?(Hash)
+          eval("@#{key.to_s}=Table.new(value)") #! We know there is only one hash in here so this is fine
+        else
+          eval("@#{key.to_s}=value")
+        end
+      end
+    end
+
     def hash
       dump = {
         id: @id,
@@ -833,6 +843,16 @@ module RPG
   end
 
   class Skill
+    def initialize(hash)
+      hash.each do |key, value|
+        if value.is_a?(Hash)
+          eval("@#{key.to_s}=RPG::AudioFile.new(value)") #! We know there is only one hash in here so this is fine
+        else
+          eval("@#{key.to_s}=value")
+        end
+      end
+    end
+
     def hash
       dump = {
         id: @id,
@@ -866,6 +886,16 @@ module RPG
   end
 
   class Item
+    def initialize(hash)
+      hash.each do |key, value|
+        if value.is_a?(Hash)
+          eval("@#{key.to_s}=RPG::AudioFile.new(value)") #! We know there is only one hash in here so this is fine
+        else
+          eval("@#{key.to_s}=value")
+        end
+      end
+    end
+
     def hash
       dump = {
         id: @id,
@@ -896,6 +926,12 @@ module RPG
   end
 
   class Weapon
+    def initialize(hash)
+      hash.each do |key, value|
+        eval("@#{key.to_s}=value")
+      end
+    end
+
     def hash
       dump = {
         id: @id,

@@ -63,6 +63,26 @@ paths.each_with_index do |path, i|
     json["states"].each_with_index do |value|
       content << RPG::State.new(value)
     end
+  when "Actors"
+    content = [nil]
+    json["actors"].each_with_index do |value|
+      content << RPG::Actor.new(value)
+    end
+  when "Skills"
+    content = [nil]
+    json["skills"].each_with_index do |value|
+      content << RPG::Skill.new(value)
+    end
+  when "Items"
+    content = [nil]
+    json["items"].each_with_index do |value|
+      content << RPG::Item.new(value)
+    end
+  when "Weapons"
+    content = [nil]
+    json["weapons"].each_with_index do |value|
+      content << RPG::Weapon.new(value)
+    end
   end
 
   rxdata = File.open("Data_Test/" + name.sub_ext(".rxdata").to_s, "wb")
