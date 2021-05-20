@@ -660,6 +660,12 @@ module RPG
   end
 
   class State
+    def initialize(hash)
+      hash.each do |key, value|
+        eval("@#{key.to_s}=value")
+      end
+    end
+
     def hash
       dump = {
         id: @id,
@@ -696,6 +702,11 @@ module RPG
 
   class Animation
     class Frame
+      def initialize(hash)
+        @cell_max = hash["cell_max"]
+        @cell_data = Table.new hash["cell_data"]
+      end
+
       def hash
         dump = {
           cell_max: @cell_max,
@@ -705,6 +716,15 @@ module RPG
     end
 
     class Timing
+      def initialize(hash)
+        @frame = hash["frame"]
+        @se = RPG::AudioFile.new hash["se"]
+        @flash_scope = hash["flash_scope"]
+        @flash_color = Color.new hash["flash_color"]
+        @flash_duration = hash["flash_duration"]
+        @condition = hash["condition"]
+      end
+
       def hash
         dump = {
           frame: @frame,
@@ -714,6 +734,23 @@ module RPG
           flash_duration: @flash_duration,
           condition: @condition,
         }
+      end
+    end
+
+    def initialize(hash)
+      @id = hash["id"]
+      @name = hash["name"]
+      @animation_name = hash["animation_name"]
+      @animation_hue = hash["animation_hue"]
+      @position = hash["position"]
+      @frame_max = hash["frame_max"]
+      @frames = []
+      @timings = []
+      hash["frames"].each_with_index do |value|
+        @frames << RPG::Animation::Frame.new(value)
+      end
+      hash["timings"].each_with_index do |value|
+        @timings << RPG::Animation::Timing.new(value)
       end
     end
 

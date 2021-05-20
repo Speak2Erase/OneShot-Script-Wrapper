@@ -53,6 +53,16 @@ paths.each_with_index do |path, i|
     json["tilesets"].each_with_index do |value|
       content << RPG::Tileset.new(value)
     end
+  when "Animations"
+    content = [nil]
+    json["animations"].each_with_index do |value|
+      content << RPG::Animation.new(value)
+    end
+  when "States"
+    content = [nil]
+    json["states"].each_with_index do |value|
+      content << RPG::State.new(value)
+    end
   end
 
   rxdata = File.open("Data_Test/" + name.sub_ext(".rxdata").to_s, "wb")
