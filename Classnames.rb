@@ -776,7 +776,26 @@ module RPG
   end
 
   class Class
+    def initialize(hash)
+      @id = hash["id"]
+      @name = hash["name"]
+      @position = hash["position"]
+      @weapon_set = hash["weapon_set"]
+      @armor_set = hash["armor_set"]
+      @element_ranks = Table.new hash["element_ranks"]
+      @state_ranks = Table.new hash["state_ranks"]
+      @learnings = []
+      hash["learnings"].each_with_index do |value|
+        @learnings << RPG::Class::Learning.new(value)
+      end
+    end
+
     class Learning
+      def initialize(hash)
+        @level = hash["level"]
+        @skill_id = hash["skill_id"]
+      end
+
       def hash
         dump = {
           level: @level,
@@ -985,6 +1004,12 @@ module RPG
 
   class Enemy
     class Action
+      def initialize(hash)
+        hash.each do |key, value|
+          eval("@#{key.to_s}=value")
+        end
+      end
+
       def hash
         dump = {
           kind: @kind,
@@ -997,6 +1022,21 @@ module RPG
           condition_switch_id: @condition_switch_id,
           rating: @rating,
         }
+      end
+    end
+
+    def initialize(hash)
+      hash.each do |key, value|
+        if value.is_a?(Hash)
+          eval("@#{key.to_s}=Table.new(value)")
+        elsif value.is_a?(Array)
+          @actions = []
+          value.each_with_index do |value|
+            @actions << RPG::Enemy::Action.new(value)
+          end
+        else
+          eval("@#{key.to_s}=value")
+        end
       end
     end
 

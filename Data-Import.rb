@@ -43,6 +43,9 @@ paths.each_with_index do |path, i|
     #when "CommonEvents"
   when /^Map\d+$/
     content = RPG::Map.new json
+
+    #! All files that contain an array of subclasses start with nil since they start from 1, not 0
+
   when "CommonEvents"
     content = [nil]
     json["commonevents"].each_with_index do |value|
@@ -87,6 +90,16 @@ paths.each_with_index do |path, i|
     content = [nil]
     json["armors"].each_with_index do |value|
       content << RPG::Armor.new(value)
+    end
+  when "Classes"
+    content = [nil]
+    json["classes"].each_with_index do |value|
+      content << RPG::Class.new(value)
+    end
+  when "Enemies"
+    content = [nil]
+    json["enemies"].each_with_index do |value|
+      content << RPG::Enemy.new(value)
     end
   end
 
