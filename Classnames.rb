@@ -511,20 +511,65 @@ module RPG
         pdef_f: @pdef_f,
         mdef_f: @mdef_f,
         variance: @variance,
-        element_set: [],
-        plus_state_set: [],
-        minus_state_set: [],
+        element_set: @element_set,
+        plus_state_set: @plus_state_set,
+        minus_state_set: @minus_state_set,
       }
-      @element_set.each_with_index do |value|
-        dump[:element_set] << value._dump
-      end
-      @plus_state_set.each_with_index do |value|
-        dump[:plus_state_set] << value._dump
-      end
-      @minus_state_set.each_with_index do |value|
-        dump[:minus_state_set] << value._dump
-      end
       dump
+    end
+  end
+
+  class Item
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        icon_name: @icon_name,
+        description: @description,
+        scope: @scope,
+        occasion: @occasion,
+        animation1_id: @animation1_id,
+        animation2_id: @animation2_id,
+        menu_se: @menu_se._dump,
+        common_event_id: @common_event_id,
+        price: @price,
+        consumable: @consumable,
+        parameter_type: @parameter_type,
+        parameter_points: @parameter_points,
+        recover_hp_rate: @recover_hp_rate,
+        recover_hp: @recover_hp,
+        hit: @hit,
+        pdef_f: @pdef_f,
+        mdef_f: @mdef_f,
+        variance: @variance,
+        element_set: @element_set,
+        plus_state_set: @plus_state_set,
+        minus_state_set: @minus_state_set,
+      }
+    end
+  end
+
+  class Weapon
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        icon_name: @icon_name,
+        description: @description,
+        animation1_id: @animation1_id,
+        animation2_id: @animation2_id,
+        price: @price,
+        atk: @atk,
+        pdef: @pdef,
+        mdef: @mdef,
+        str_plus: @str_plus,
+        dex_plus: @dex_plus,
+        agi_plus: @agi_plus,
+        int_plus: @int_plus,
+        element_set: @element_set,
+        plus_state_set: @plus_state_set,
+        minus_state_set: @minus_state_set,
+      }
     end
   end
 end
