@@ -594,4 +594,56 @@ module RPG
       }
     end
   end
+
+  class Enemy
+    class Action
+      def _dump
+        dump = {
+          kind: @kind,
+          basic: @basic,
+          skill_id: @skill_id,
+          condition_turn_a: @condition_turn_a,
+          condition_turn_b: @condition_turn_b,
+          condition_hp: @condition_hp,
+          condition_level: @condition_level,
+          condition_switch_id: @condition_switch_id,
+          rating: @rating,
+        }
+      end
+    end
+
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        battler_name: @battler_name,
+        battler_hue: @battler_hue,
+        maxhp: @maxhp,
+        maxsp: @maxsp,
+        str: @str,
+        dex: @dex,
+        agi: @agi,
+        int: @int,
+        atk: @atk,
+        pdef: @pdef,
+        mdef: @mdef,
+        eva: @eva,
+        animation1_id: @animation1_id,
+        animation2_id: @animation2_id,
+        element_ranks: @element_ranks._dump,
+        state_ranks: @state_ranks._dump,
+        actions: [],
+        exp: @exp,
+        gold: @gold,
+        item_id: @item_id,
+        weapon_id: @weapon_id,
+        armor_id: @armor_id,
+        treasure_prob: @treasure_prob,
+      }
+      @actions.each_with_index do |value|
+        dump[:actions] << value._dump
+      end
+      dump
+    end
+  end
 end
