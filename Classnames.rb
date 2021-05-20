@@ -350,6 +350,41 @@ module RPG
     end
   end
 
+  class State
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        animation_id: @animation_id,
+        restriction: @restriction,
+        nonresistance: @nonresistance,
+        zero_hp: @zero_hp,
+        cant_get_exp: @cant_get_exp,
+        cant_evade: @cant_evade,
+        slip_damage: @slip_damage,
+        rating: @rating,
+        hit_rate: @hit_rate,
+        maxhp_rate: @maxhp_rate,
+        maxsp_rate: @maxsp_rate,
+        str_rate: @str_rate,
+        dex_rate: @dex_rate,
+        agi_rate: @agi_rate,
+        int_rate: @int_rate,
+        atk_rate: @atk_rate,
+        pdef_rate: @pdef_rate,
+        mdef_rate: @mdef_rate,
+        eva: @eva,
+        battle_only: @battle_only,
+        hold_turn: @hold_turn,
+        auto_release_prob: @auto_release_prob,
+        shock_release_prob: @shock_release_prob,
+        guard_element_set: @guard_element_set,
+        plus_state_set: @plus_state_set,
+        minus_state_set: @minus_state_set,
+      }
+    end
+  end
+
   class Animation
     class Frame
       def _dump
@@ -389,6 +424,34 @@ module RPG
       end
       @timings.each_with_index do |value|
         dump[:timings] << value._dump
+      end
+      dump
+    end
+  end
+
+  class Class
+    class Learning
+      def _dump
+        dump = {
+          level: @level,
+          skill_id: @skill_id,
+        }
+      end
+    end
+
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        position: @position,
+        weapon_set: @weapon_set,
+        armor_set: @armor_set,
+        element_ranks: @element_ranks._dump,
+        state_ranks: @state_ranks._dump,
+        learnings: [],
+      }
+      @learnings.each_with_index do |value|
+        dump[:learnings] << value._dump
       end
       dump
     end
