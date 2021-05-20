@@ -646,4 +646,66 @@ module RPG
       dump
     end
   end
+
+  class Troop
+    class Member
+      def _dump
+        dump = {
+          enemy_id: @enemy_id,
+          x: @x,
+          y: @y,
+          hidden: @hidden,
+          immortal: @immortal,
+        }
+      end
+    end
+
+    class Page
+      class Condition
+        def _dump
+          dump = {
+            turn_valid: @turn_valid,
+            enemy_valid: @enemy_valid,
+            actor_valid: @actor_valid,
+            switch_valid: @switch_valid,
+            turn_a: @turn_a,
+            turn_b: @turn_b,
+            enemy_index: @enemy_index,
+            enemy_hp: @enemy_hp,
+            actor_id: @actor_id,
+            actor_hp: @actor_hp,
+            switch_id: @switch_id,
+          }
+        end
+      end
+
+      def _dump
+        dump = {
+          condition: @condition._dump,
+          span: @span,
+          list: [],
+        }
+        @list.each_with_index do |value|
+          dump[:list] << value._dump
+        end
+        dump
+      end
+    end
+
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        members: [],
+        pages: [],
+      }
+      @members.each_with_index do |value|
+        dump[:members] << value._dump
+      end
+      @pages.each_with_index do |value|
+        dump[:pages] << value._dump
+      end
+      dump
+    end
+  end
 end
