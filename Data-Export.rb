@@ -21,61 +21,6 @@ paths.each_with_index do |path, i|
   case name.to_s
   when "xScripts"
   when "Scripts"
-  when "Troops"
-    content[:troops] = []
-    rxdata.each_with_index do |value|
-      content[:troops] << value._dump unless value == nil
-    end
-  when "Enemies"
-    content[:enemies] = []
-    rxdata.each_with_index do |value|
-      content[:enemies] << value._dump unless value == nil
-    end
-  when "Armors"
-    content[:armors] = []
-    rxdata.each_with_index do |value|
-      content[:armors] << value._dump unless value == nil
-    end
-  when "Weapons"
-    content[:weapons] = []
-    rxdata.each_with_index do |value|
-      content[:weapons] << value._dump unless value == nil
-    end
-  when "Items"
-    content[:items] = []
-    rxdata.each_with_index do |value|
-      content[:items] << value._dump unless value == nil
-    end
-  when "Skills"
-    content[:skills] = []
-    rxdata.each_with_index do |value|
-      content[:skills] << value._dump unless value == nil
-    end
-  when "Actors"
-    content[:actors] = []
-    rxdata.each_with_index do |value|
-      content[:actors] << value._dump unless value == nil
-    end
-  when "Classes"
-    content[:classes] = []
-    rxdata.each_with_index do |value|
-      content[:classes] << value._dump unless value == nil
-    end
-  when "States"
-    content[:states] = []
-    rxdata.each_with_index do |value|
-      content[:states] << value._dump unless value == nil
-    end
-  when "Animations"
-    content[:animations] = []
-    rxdata.each_with_index do |value|
-      content[:animations] << value._dump unless value == nil
-    end
-  when "Tilesets"
-    content[:tilesets] = []
-    rxdata.each_with_index do |value|
-      content[:tilesets] << value._dump unless value == nil
-    end
   when "System"
     content = {
       magic_number: rxdata.instance_variable_get(:@magic_number),
@@ -150,7 +95,10 @@ paths.each_with_index do |path, i|
     content[:width] = rxdata.instance_variable_get(:@width)
     content[:tileset_id] = rxdata.instance_variable_get(:@tileset_id)
   else
-    $stderr.puts "Unkown file #{name}!"
+    content[name] = []
+    rxdata.each_with_index do |value|
+      content[name] << value._dump unless value == nil
+    end
   end
 
   json = File.open("Data_JSON/" + name.sub_ext(".json").to_s, "wb")
