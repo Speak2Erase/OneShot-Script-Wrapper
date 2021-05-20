@@ -41,17 +41,12 @@ paths.each_with_index do |path, i|
     mapinfos.each do |key, value|
       content[key] = value.hash
     end
-  when "CommonEvents"
-    content[:common_events] = []
-    rxdata.each_with_index do |value|
-      content[:common_events] << value.hash unless value == nil
-    end
   when /^Map\d+$/
     content = rxdata.hash
   else
-    content[name] = []
+    content[name.to_s.downcase] = []
     rxdata.each_with_index do |value|
-      content[name] << value.hash unless value == nil
+      content[name.to_s.downcase] << value.hash unless value == nil
     end
   end
 

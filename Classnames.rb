@@ -598,6 +598,17 @@ module RPG
   end
 
   class CommonEvent
+    def initialize(hash)
+      @id = hash["id"]
+      @name = hash["name"]
+      @trigger = hash["trigger"]
+      @switch_id = hash["switch_id"]
+      @list = []
+      hash["list"].each_with_index do |value|
+        @list << RPG::EventCommand.new(value)
+      end
+    end
+
     def hash
       dump = {
         id: @id,
