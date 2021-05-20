@@ -89,21 +89,7 @@ paths.each_with_index do |path, i|
       content[:common_events] << value.hash unless value == nil
     end
   when /^Map\d+$/
-    content[:events] = {}
-    events = (rxdata.instance_variable_get(:@events).sort_by { |key| key }.to_h)
-    events.each do |key, value|
-      content[:events][key] = value.hash
-    end
-    content[:data] = rxdata.instance_variable_get(:@data).hash
-    content[:autoplay_bgm] = rxdata.instance_variable_get(:@autoplay_bgm)
-    content[:autoplay_bgs] = rxdata.instance_variable_get(:@autoplay_bgs)
-    content[:bgm] = rxdata.instance_variable_get(:@bgm).hash
-    content[:bgs] = rxdata.instance_variable_get(:@bgs).hash
-    content[:encounter_list] = rxdata.instance_variable_get(:@encounter_list)
-    content[:encounter_step] = rxdata.instance_variable_get(:@encounter_step)
-    content[:height] = rxdata.instance_variable_get(:@height)
-    content[:width] = rxdata.instance_variable_get(:@width)
-    content[:tileset_id] = rxdata.instance_variable_get(:@tileset_id)
+    content = rxdata.hash
   else
     content[name] = []
     rxdata.each_with_index do |value|

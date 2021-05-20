@@ -84,22 +84,8 @@ paths.each_with_index do |path, i|
       content[key.to_i].load json[key]
     end
     #when "CommonEvents"
-    #when /^Map\d+$/
-    #  content[:events] = {}
-    #  events = (json.instance_variable_get(:@events).sort_by { |key| key }.to_h)
-    #  events.each do |key, value|
-    #    content[:events][key] = value.hash
-    #  end
-    #  content[:data] = json.instance_variable_get(:@data).hash
-    #  content[:autoplay_bgm] = json.instance_variable_get(:@autoplay_bgm)
-    #  content[:autoplay_bgs] = json.instance_variable_get(:@autoplay_bgs)
-    #  content[:bgm] = json.instance_variable_get(:@bgm).hash
-    #  content[:bgs] = json.instance_variable_get(:@bgs).hash
-    #  content[:encounter_list] = json.instance_variable_get(:@encounter_list)
-    #  content[:encounter_step] = json.instance_variable_get(:@encounter_step)
-    #  content[:height] = json.instance_variable_get(:@height)
-    #  content[:width] = json.instance_variable_get(:@width)
-    #  content[:tileset_id] = json.instance_variable_get(:@tileset_id)
+  when /^Map\d+$/
+    content = ""
     #else
     #  content[name] = []
     #  json.each_with_index do |value|

@@ -241,6 +241,29 @@ module RPG
     end
   end
 
+  class Map
+    def hash
+      dump = {
+        tileset_id: @tileset_id,
+        width: @width,
+        height: @height,
+        autoplay_bgm: @autoplay_bgm,
+        bgm: @bgm.hash,
+        autoplay_bgs: @autoplay_bgs,
+        bgs: @bgs.hash,
+        encounter_list: @encounter_list,
+        encounter_step: @encounter_step,
+        events: {},
+        data: @data.hash,
+      }
+      events = @events.sort_by { |key| key }.to_h
+      events.each do |key, value|
+        dump[:events][key] = value.hash
+      end
+      dump
+    end
+  end
+
   class MapInfo
     attr_accessor :order
 
