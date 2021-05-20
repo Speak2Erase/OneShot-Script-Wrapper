@@ -74,26 +74,27 @@ class RPG::System::TestBattler < RPG::ObjectBase; end
 class RPG::AudioFile < RPG::ObjectBase; end
 
 class Table
-  def initialize(hash)
+  def initialize(hash, resize = true)
     @num_of_dimensions = hash["dimensions"]
     @xsize = hash["width"]
     @ysize = hash["height"]
     @zsize = hash["depth"]
     @num_of_elements = hash["size"]
     @elements = hash["elements"]
-
-    if @num_of_dimensions > 1
-      if @xsize > 1
-        @elements = @elements.each_slice(@xsize).to_a
-      else
-        @elements = @elements.map { |element| [element] }
+    if resize
+      if @num_of_dimensions > 1
+        if @xsize > 1
+          @elements = @elements.each_slice(@xsize).to_a
+        else
+          @elements = @elements.map { |element| [element] }
+        end
       end
-    end
-    if @num_of_dimensions > 2
-      if @ysize > 1
-        @elements = @elements.each_slice(@ysize).to_a
-      else
-        @elements = @elements.map { |element| [element] }
+      if @num_of_dimensions > 2
+        if @ysize > 1
+          @elements = @elements.each_slice(@ysize).to_a
+        else
+          @elements = @elements.map { |element| [element] }
+        end
       end
     end
   end
@@ -128,7 +129,7 @@ class Table
     end
     hash["elements"] = *@elements
 
-    Table.new hash
+    Table.new(hash)
   end
 end
 
@@ -204,6 +205,7 @@ module RPG
         @move_route = RPG::MoveRoute.new hash["move_route"]
         @walk_anime = hash["walk_anime"]
         @step_anime = hash["step_anime"]
+        @direction_fix = hash["direction_fix"]
         @through = hash["through"]
         @always_on_top = hash["always_on_top"]
         @trigger = hash["trigger"]
@@ -223,6 +225,7 @@ module RPG
           move_route: "",
           walk_anime: @walk_anime,
           step_anime: @step_anime,
+          direction_fix: @direction_fix,
           through: @through,
           always_on_top: @always_on_top,
           trigger: @trigger,
@@ -367,7 +370,7 @@ module RPG
         elsif value.to_s.match(/#<Color:/)
           @parameters << Color.new(value)
         elsif value.to_s.match(/#<Table:/)
-          @parameters << Table.new(value)
+          @parameters << Table.new(value, false)
         else
           @parameters << value
         end
@@ -401,9 +404,12 @@ module RPG
       @autoplay_bgs = hash["autoplay_bgs"]
       @bgm = RPG::AudioFile.new hash["bgm"]
       @bgs = RPG::AudioFile.new hash["bgs"]
-      @data = Table.new hash["data"]
+      @encounter_list = hash["encounter_list"]
+      @encounter_step = hash["encounter_step"]
+      @data = Table.new(hash["data"], false)
       @events = {}
-      hash["events"].each do |key, value|
+      events = hash["events"] #.sort_by { |key| key }.to_h
+      events.each do |key, value|
         @events[key.to_i] = RPG::Event.new value
       end
     end
@@ -422,7 +428,7 @@ module RPG
         events: {},
         data: @data.hash,
       }
-      events = @events.sort_by { |key| key }.to_h
+      events = @events #.sort_by { |key| key }.to_h
       events.each do |key, value|
         dump[:events][key] = value.hash
       end
