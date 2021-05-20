@@ -1077,6 +1077,12 @@ module RPG
 
   class Troop
     class Member
+      def initialize(hash)
+        hash.each do |key, value|
+          eval("@#{key.to_s}=value")
+        end
+      end
+
       def hash
         dump = {
           enemy_id: @enemy_id,
@@ -1090,6 +1096,12 @@ module RPG
 
     class Page
       class Condition
+        def initialize(hash)
+          hash.each do |key, value|
+            eval("@#{key.to_s}=value")
+          end
+        end
+
         def hash
           dump = {
             turn_valid: @turn_valid,
@@ -1107,6 +1119,15 @@ module RPG
         end
       end
 
+      def initialize(hash)
+        @condition = RPG::Troop::Page::Condition.new hash["condition"]
+        @span = hash["span"]
+        @list = []
+        hash["list"].each_with_index do |value|
+          @list << RPG::EventCommand.new(value)
+        end
+      end
+
       def hash
         dump = {
           condition: @condition.hash,
@@ -1117,6 +1138,21 @@ module RPG
           dump[:list] << value.hash
         end
         dump
+      end
+    end
+
+    def initialize(hash)
+      @id = hash["id"]
+      @name = hash["name"]
+      @members = []
+      @pages = []
+
+      hash["members"].each_with_index do |value|
+        @members << RPG::Troop::Member.new(value)
+      end
+
+      hash["pages"].each_with_index do |value|
+        @pages << RPG::Troop::Page.new(value)
       end
     end
 

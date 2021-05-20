@@ -101,6 +101,11 @@ paths.each_with_index do |path, i|
     json["enemies"].each_with_index do |value|
       content << RPG::Enemy.new(value)
     end
+  when "Troops"
+    content = [nil]
+    json["troops"].each_with_index do |value|
+      content << RPG::Troop.new(value)
+    end
   end
 
   rxdata = File.open("Data_Test/" + name.sub_ext(".rxdata").to_s, "wb")
