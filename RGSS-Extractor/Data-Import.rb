@@ -33,6 +33,8 @@ def import
     case name.to_s
     when "xScripts"
       rpgscript("./", "./Scripts")
+      progress.increment
+      return
     when "Scripts"
     when "System"
       content = RPG::System.new json
