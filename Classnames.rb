@@ -625,6 +625,16 @@ module RPG
   end
 
   class Tileset
+    def initialize(hash)
+      hash.each do |key, value|
+        if value.is_a?(Hash)
+          eval("@#{key.to_s}=Table.new(value)")
+        else
+          eval("@#{key.to_s}=value")
+        end
+      end
+    end
+
     def hash
       dump = {
         id: @id,

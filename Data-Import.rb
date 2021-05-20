@@ -44,15 +44,15 @@ paths.each_with_index do |path, i|
   when /^Map\d+$/
     content = RPG::Map.new json
   when "CommonEvents"
-    content = []
+    content = [nil]
     json["commonevents"].each_with_index do |value|
       content << RPG::CommonEvent.new(value)
     end
-    #else
-    #  content[name] = []
-    #  json.each_with_index do |value|
-    #    content[name] << value.hash unless value == nil
-    #  end
+  when "Tilesets"
+    content = [nil]
+    json["tilesets"].each_with_index do |value|
+      content << RPG::Tileset.new(value)
+    end
   end
 
   rxdata = File.open("Data_Test/" + name.sub_ext(".rxdata").to_s, "wb")
