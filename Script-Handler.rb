@@ -71,7 +71,7 @@ def rpgscript(game_dir, scripts_dir, extract = false)
         end
       end
     end
-    puts "#{target_path} extracted."
+    #puts "#{target_path} extracted."
   else
     # Write scripts
     scripts = []
@@ -90,6 +90,6 @@ def rpgscript(game_dir, scripts_dir, extract = false)
     end
 
     File.open(target_path, "wb") { |f| f.write(Marshal.dump(scripts)) }
-    puts "#{target_path} written."
+    #puts "#{target_path} written."
   end
 end

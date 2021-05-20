@@ -452,7 +452,6 @@ module RPG
     attr_accessor :order
 
     def initialize(hash)
-      #$stderr.puts hash
       @name = hash["name"]
       @parent_id = hash["parent_id"]
       @order = hash["order"]
