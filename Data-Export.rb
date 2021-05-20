@@ -6,6 +6,7 @@ require "ruby-progressbar"
 require "fileutils"
 require "pathname"
 require_relative "Classnames"
+require_relative "Script-Handler"
 
 progress = ProgressBar.create(
   format: "%a /%e |%B| %p%% %c/%C %r files/sec %t",
@@ -30,53 +31,10 @@ paths.each_with_index do |path, i|
   #puts name.to_s
   case name.to_s
   when "xScripts"
+    rpgscript("./", "./Scripts", true)
   when "Scripts"
   when "System"
-    content = {
-      magic_number: rxdata.instance_variable_get(:@magic_number),
-      party_members: rxdata.instance_variable_get(:@party_members),
-      elements: rxdata.instance_variable_get(:@elements),
-      switches: rxdata.instance_variable_get(:@switches),
-      variables: rxdata.instance_variable_get(:@variables),
-      windowskin_name: rxdata.instance_variable_get(:@windowskin_name),
-      title_name: rxdata.instance_variable_get(:@title_name),
-      gameover_name: rxdata.instance_variable_get(:@gameover_name),
-      battle_transition: rxdata.instance_variable_get(:@battle_transition),
-
-      title_bgm: rxdata.instance_variable_get(:@title_bgm).hash,
-      battle_bgm: rxdata.instance_variable_get(:@battle_bgm).hash,
-
-      battle_end_me: rxdata.instance_variable_get(:@battle_end_me).hash,
-      gameover_me: rxdata.instance_variable_get(:@gameover_me).hash,
-
-      cursor_se: rxdata.instance_variable_get(:@cursor_se).hash,
-      decision_se: rxdata.instance_variable_get(:@decision_se).hash,
-      cancel_se: rxdata.instance_variable_get(:@cancel_se).hash,
-      buzzer_se: rxdata.instance_variable_get(:@buzzer_se).hash,
-      equip_se: rxdata.instance_variable_get(:@equip_se).hash,
-      shop_se: rxdata.instance_variable_get(:@shop_se).hash,
-      save_se: rxdata.instance_variable_get(:@save_se).hash,
-      load_se: rxdata.instance_variable_get(:@load_se).hash,
-      battle_start_se: rxdata.instance_variable_get(:@battle_start_se).hash,
-      escape_se: rxdata.instance_variable_get(:@escape_se).hash,
-      actor_collapse_se: rxdata.instance_variable_get(:@actor_collapse_se).hash,
-      enemy_collapse_se: rxdata.instance_variable_get(:@enemy_collapse_se).hash,
-
-      words: rxdata.instance_variable_get(:@words).hash,
-
-      test_battlers: [],
-      test_troop_id: rxdata.instance_variable_get(:@test_troop_id),
-      start_map_id: rxdata.instance_variable_get(:@start_map_id),
-      start_x: rxdata.instance_variable_get(:@start_x),
-      start_y: rxdata.instance_variable_get(:@start_y),
-      battleback_name: rxdata.instance_variable_get(:@battleback_name),
-      battler_name: rxdata.instance_variable_get(:@battler_name),
-      battler_hue: rxdata.instance_variable_get(:@battler_hue),
-      edit_map_id: rxdata.instance_variable_get(:@edit_map_id),
-    }
-    rxdata.instance_variable_get(:@test_battlers).each_with_index do |val, index|
-      content[:test_battlers] << rxdata.instance_variable_get(:@test_battlers)[index].hash
-    end
+    content = rxdata.hash
   when "MapInfos"
     content = {}
     mapinfos = rxdata.sort_by { |key, value| value.order }.to_h

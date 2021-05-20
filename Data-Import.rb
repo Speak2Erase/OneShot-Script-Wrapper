@@ -6,22 +6,23 @@ require "ruby-progressbar"
 require "fileutils"
 require "pathname"
 require_relative "Classnames"
+require_relative "Script-Handler"
 
-#progress = ProgressBar.create(
-#  format: "%a /%e |%B| %p%% %c/%C %r files/sec %t",
-#  starting_at: 0,
-#  total: nil,
-#  output: $stderr,
-#  length: 150,
-#  title: "Exported",
-#  remainder_mark: "\e[0;30m█\e[0m",
-#  progress_mark: "█",
-#  unknown_progress_animation_steps: ["==>", ">==", "=>="],
-#)
+progress = ProgressBar.create(
+  format: "%a /%e |%B| %p%% %c/%C %r files/sec %t",
+  starting_at: 0,
+  total: nil,
+  output: $stderr,
+  length: 150,
+  title: "Imported",
+  remainder_mark: "\e[0;30m█\e[0m",
+  progress_mark: "█",
+  unknown_progress_animation_steps: ["==>", ">==", "=>="],
+)
 Dir.mkdir "Data_Test" unless Dir.exists? "Data_Test"
 paths = Pathname.glob(("Data_JSON/" + ("*" + ".json")))
 count = paths.size
-#progress.total = count
+progress.total = count
 paths.each_with_index do |path, i|
   content = Hash.new
 
@@ -30,53 +31,10 @@ paths.each_with_index do |path, i|
   #puts name.to_s
   case name.to_s
   when "xScripts"
+    rpgscript("./", "./Scripts")
   when "Scripts"
-    #when "System"
-    #  content = {
-    #    magic_number: json.instance_variable_get(:@magic_number),
-    #    party_members: json.instance_variable_get(:@party_members),
-    #    elements: json.instance_variable_get(:@elements),
-    #    switches: json.instance_variable_get(:@switches),
-    #    variables: json.instance_variable_get(:@variables),
-    #    windowskin_name: json.instance_variable_get(:@windowskin_name),
-    #    title_name: json.instance_variable_get(:@title_name),
-    #    gameover_name: json.instance_variable_get(:@gameover_name),
-    #    battle_transition: json.instance_variable_get(:@battle_transition),
-    #
-    #    title_bgm: json.instance_variable_get(:@title_bgm).hash,
-    #    battle_bgm: json.instance_variable_get(:@battle_bgm).hash,
-    #
-    #    battle_end_me: json.instance_variable_get(:@battle_end_me).hash,
-    #    gameover_me: json.instance_variable_get(:@gameover_me).hash,
-    #
-    #    cursor_se: json.instance_variable_get(:@cursor_se).hash,
-    #    decision_se: json.instance_variable_get(:@decision_se).hash,
-    #    cancel_se: json.instance_variable_get(:@cancel_se).hash,
-    #    buzzer_se: json.instance_variable_get(:@buzzer_se).hash,
-    #    equip_se: json.instance_variable_get(:@equip_se).hash,
-    #    shop_se: json.instance_variable_get(:@shop_se).hash,
-    #    save_se: json.instance_variable_get(:@save_se).hash,
-    #    load_se: json.instance_variable_get(:@load_se).hash,
-    #    battle_start_se: json.instance_variable_get(:@battle_start_se).hash,
-    #    escape_se: json.instance_variable_get(:@escape_se).hash,
-    #    actor_collapse_se: json.instance_variable_get(:@actor_collapse_se).hash,
-    #    enemy_collapse_se: json.instance_variable_get(:@enemy_collapse_se).hash,
-    #
-    #    words: json.instance_variable_get(:@words).hash,
-    #
-    #    test_battlers: [],
-    #    test_troop_id: json.instance_variable_get(:@test_troop_id),
-    #    start_map_id: json.instance_variable_get(:@start_map_id),
-    #    start_x: json.instance_variable_get(:@start_x),
-    #    start_y: json.instance_variable_get(:@start_y),
-    #    battleback_name: json.instance_variable_get(:@battleback_name),
-    #    battler_name: json.instance_variable_get(:@battler_name),
-    #    battler_hue: json.instance_variable_get(:@battler_hue),
-    #    edit_map_id: json.instance_variable_get(:@edit_map_id),
-    #  }
-    #  json.instance_variable_get(:@test_battlers).each_with_index do |val, index|
-    #    content[:test_battlers] << json.instance_variable_get(:@test_battlers)[index].hash
-    #  end
+  when "System"
+    content = RPG::System.new json
   when "MapInfos"
     content = {}
     json.each do |key, value|
@@ -93,8 +51,8 @@ paths.each_with_index do |path, i|
   end
 
   rxdata = File.open("Data_Test/" + name.sub_ext(".rxdata").to_s, "wb")
-  #puts content
+  puts content
   rxdata.puts Marshal.dump(content)
 
-  #progress.increment
+  progress.increment
 end

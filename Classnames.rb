@@ -490,7 +490,73 @@ module RPG
   end
 
   class System
+    def initialize(hash)
+      hash.each do |key, value|
+        if value.is_a?(Hash)
+          if value["volume"] != nil
+            eval("@#{key.to_s}=RPG::AudioFile.new(value)")
+          else
+            eval("@#{key.to_s}=RPG::System::Words.new(value)")
+          end
+        else
+          eval("@#{key.to_s}=value")
+        end
+      end
+    end
+
+    def hash
+      dump = {
+        magic_number: @magic_number,
+        party_members: @party_members,
+        elements: @elements,
+        switches: @switches,
+        variables: @variables,
+        windowskin_name: @windowskin_name,
+        title_name: @title_name,
+        gameover_name: @gameover_name,
+        battle_transition: @battle_transition,
+
+        title_bgm: @title_bgm.hash,
+        battle_bgm: @battle_bgm.hash,
+        battle_end_me: @battle_end_me.hash,
+        gameover_me: @gameover_me.hash,
+        cursor_se: @cursor_se.hash,
+        decision_se: @decision_se.hash,
+        cancel_se: @cancel_se.hash,
+        buzzer_se: @buzzer_se.hash,
+        equip_se: @equip_se.hash,
+        shop_se: @shop_se.hash,
+        save_se: @save_se.hash,
+        load_se: @load_se.hash,
+        battle_start_se: @battle_start_se.hash,
+        escape_se: @escape_se.hash,
+        actor_collapse_se: @actor_collapse_se.hash,
+        enemy_collapse_se: @enemy_collapse_se.hash,
+
+        words: @words.hash,
+        test_battlers: [],
+        test_troop_id: @test_troop_id,
+        start_map_id: @start_map_id,
+        start_x: @start_x,
+        start_y: @start_y,
+        battleback_name: @battleback_name,
+        battler_name: @battler_name,
+        battler_hue: @battler_hue,
+        edit_map_id: @edit_map_id,
+      }
+      @test_battlers.each_with_index do |value, index|
+        dump[:test_battlers] << value.hash
+      end
+      dump
+    end
+
     class Words
+      def initialize(hash)
+        hash.each do |key, value|
+          eval("@#{key.to_s}=value")
+        end
+      end
+
       def hash
         dump = {
           gold: @gold,
