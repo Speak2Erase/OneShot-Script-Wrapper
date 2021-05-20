@@ -1,8 +1,11 @@
 class Color
   attr_accessor :red, :green, :blue, :alpha
 
-  def initialize(red, green, blue, alpha = 255)
-    @red, @green, @blue, @alpha = red, green, blue, alpha
+  def initialize(hash)
+    @red = hash["red"]
+    @green = hash["green"]
+    @blue = hash["blue"]
+    @alpha = hash["alpha"]
   end
 
   def hash
@@ -15,7 +18,18 @@ class Color
   end
 
   def self._load(obj)
-    Color.new(*obj.unpack("EEEE"))
+    data = *obj.unpack("EEEE")
+    s_hash = {
+      red: data[0],
+      green: data[1],
+      blue: data[2],
+      alpha: data[3],
+    }
+    hash = {}
+    s_hash.each do |key, value|
+      hash[key.to_s] = value
+    end
+    Color.new hash
   end
 end
 
@@ -60,8 +74,14 @@ class RPG::System::TestBattler < RPG::ObjectBase; end
 class RPG::AudioFile < RPG::ObjectBase; end
 
 class Table
-  def initialize(data)
-    @num_of_dimensions, @xsize, @ysize, @zsize, @num_of_elements, *@elements = *data
+  def initialize(hash)
+    @num_of_dimensions = hash["dimensions"]
+    @xsize = hash["width"]
+    @ysize = hash["height"]
+    @zsize = hash["depth"]
+    @num_of_elements = hash["size"]
+    @elements = hash["elements"]
+
     if @num_of_dimensions > 1
       if @xsize > 1
         @elements = @elements.each_slice(@xsize).to_a
@@ -92,15 +112,34 @@ class Table
   end
 
   def self._load(obj)
-    Table.new(obj.unpack("VVVVVv*"))
+    data = obj.unpack("VVVVVv*")
+    @num_of_dimensions, @xsize, @ysize, @zsize, @num_of_elements, *@elements = *data
+    s_hash = {
+      dimensions: @num_of_dimensions,
+      width: @xsize,
+      height: @ysize,
+      depth: @zsize,
+      size: @num_of_elements,
+      elements: [],
+    }
+    hash = {}
+    s_hash.each do |key, value|
+      hash[key.to_s] = value
+    end
+    hash["elements"] = *@elements
+
+    Table.new hash
   end
 end
 
 class Tone
   attr_accessor :red, :green, :blue, :gray
 
-  def initialize(red, green, blue, gray = 0)
-    @red, @green, @blue, @gray = red, green, blue, gray
+  def initialize(hash = {})
+    @red = hash["red"]
+    @green = hash["green"]
+    @blue = hash["blue"]
+    @gray = hash["gray"]
   end
 
   def hash
@@ -113,12 +152,34 @@ class Tone
   end
 
   def self._load(obj)
-    Tone.new(*obj.unpack("EEEE"))
+    data = *obj.unpack("EEEE")
+    s_hash = {
+      "red": data[0],
+      "green": data[1],
+      "blue": data[2],
+      "gray": data[3],
+    }
+    hash = {}
+    s_hash.each do |key, value|
+      hash[key.to_s] = value
+    end
+    Tone.new hash
   end
 end
 
 module RPG
   class Event
+    def initialize(hash)
+      @id = hash["id"]
+      @name = hash["name"]
+      @x = hash["x"]
+      @y = hash["y"]
+      @pages = []
+      hash["pages"].each_with_index do |value|
+        @pages << RPG::Event::Page.new(value)
+      end
+    end
+
     def hash
       dump = {
         id: @id,
@@ -134,6 +195,24 @@ module RPG
     end
 
     class Page
+      def initialize(hash)
+        @condition = RPG::Event::Page::Condition.new hash["condition"]
+        @graphic = RPG::Event::Page::Graphic.new hash["graphic"]
+        @move_type = hash["move_type"]
+        @move_speed = hash["move_speed"]
+        @move_frequency = hash["move_frequency"]
+        @move_route = RPG::MoveRoute.new hash["move_route"]
+        @walk_anime = hash["walk_anime"]
+        @step_anime = hash["step_anime"]
+        @through = hash["through"]
+        @always_on_top = hash["always_on_top"]
+        @trigger = hash["trigger"]
+        @list = []
+        hash["list"].each_with_index do |value|
+          @list << RPG::EventCommand.new(value)
+        end
+      end
+
       def hash
         dump = {
           condition: "",
@@ -149,8 +228,8 @@ module RPG
           trigger: @trigger,
           list: [],
         }
-        for i in 0..(@list.size - 1)
-          dump[:list] << @list[i].hash
+        @list.each_with_index do |value|
+          dump[:list] << value.hash
         end
         dump[:condition] = @condition.hash
         dump[:graphic] = @graphic.hash
@@ -159,6 +238,18 @@ module RPG
       end
 
       class Condition
+        def initialize(hash)
+          @switch1_valid = hash["switch1_valid"]
+          @switch2_valid = hash["switch2_valid"]
+          @variable_valid = hash["variable_valid"]
+          @self_switch_valid = hash["self_switch_valid"]
+          @switch1_id = hash["switch1_id"]
+          @switch2_id = hash["switch2_id"]
+          @variable_id = hash["variable_id"]
+          @variable_value = hash["variable_value"]
+          @self_switch_ch = hash["self_switch_ch"]
+        end
+
         def hash
           dump = {
             switch1_valid: @switch1_valid,
@@ -175,6 +266,16 @@ module RPG
       end
 
       class Graphic
+        def initialize(hash)
+          @tile_id = hash["tile_id"]
+          @character_name = hash["character_name"]
+          @character_hue = hash["character_hue"]
+          @direction = hash["direction"]
+          @pattern = hash["pattern"]
+          @opacity = hash["opacity"]
+          @blend_type = hash["blend_type"]
+        end
+
         def hash
           dump = {
             tile_id: @tile_id,
@@ -191,10 +292,33 @@ module RPG
   end
 
   class EventCommand
+    def initialize(hash)
+      @code = hash["code"]
+      @indent = hash["indent"]
+      @parameters = []
+      hash["parameters"].each_with_index do |value|
+        if value.is_a?(Hash)
+          if value["volume"] != nil
+            @parameters << RPG::AudioFile.new(value)
+          elsif value["gray"] != nil
+            @parameters << Tone.new(value)
+          elsif value["alpha"] != nil
+            @parameters << Color.new(value)
+          elsif value["repeat"] != nil
+            @parameters << RPG::MoveRoute.new(value)
+          end
+        else
+          @parameters << value
+        end
+      end
+    end
+
     def hash
-      dump = { code: @code,
-               indent: @indent,
-               parameters: [] }
+      dump = {
+        code: @code,
+        indent: @indent,
+        parameters: [],
+      }
       @parameters.each_with_index do |value|
         if value.to_s.match(/#<RPG::/) || value.to_s.match(/#<Tone:/) || value.to_s.match(/#<Color:/) || value.to_s.match(/#<Table:/)
           dump[:parameters] << value.hash
@@ -209,6 +333,15 @@ module RPG
   end
 
   class MoveRoute
+    def initialize(hash)
+      @repeat = hash["repeat"]
+      @skippable = hash["skippable"]
+      @list = []
+      hash["list"].each_with_index do |value|
+        @list << RPG::MoveCommand.new(value)
+      end
+    end
+
     def hash
       dump = {
         repeat: @repeat,
@@ -223,6 +356,24 @@ module RPG
   end
 
   class MoveCommand
+    def initialize(hash)
+      @code = hash["code"]
+      @parameters = []
+      hash["parameters"].each_with_index do |value|
+        if value.to_s.match(/#<RPG::/)
+          @parameters << RPG::AudioFile.new(value)
+        elsif value.to_s.match(/#<Tone:/)
+          @parameters << Tone.new(value)
+        elsif value.to_s.match(/#<Color:/)
+          @parameters << Color.new(value)
+        elsif value.to_s.match(/#<Table:/)
+          @parameters << Table.new(value)
+        else
+          @parameters << value
+        end
+      end
+    end
+
     def hash
       dump = {
         code: @code,
@@ -242,6 +393,21 @@ module RPG
   end
 
   class Map
+    def initialize(hash)
+      @tileset_id = hash["tileset_id"]
+      @width = hash["width"]
+      @height = hash["height"]
+      @autoplay_bgm = hash["autoplay_bgm"]
+      @autoplay_bgs = hash["autoplay_bgs"]
+      @bgm = RPG::AudioFile.new hash["bgm"]
+      @bgs = RPG::AudioFile.new hash["bgs"]
+      @data = Table.new hash["data"]
+      @events = {}
+      hash["events"].each do |key, value|
+        @events[key.to_i] = RPG::Event.new value
+      end
+    end
+
     def hash
       dump = {
         tileset_id: @tileset_id,
@@ -267,7 +433,7 @@ module RPG
   class MapInfo
     attr_accessor :order
 
-    def load(hash)
+    def initialize(hash)
       #$stderr.puts hash
       @name = hash["name"]
       @parent_id = hash["parent_id"]
@@ -290,7 +456,7 @@ module RPG
   end
 
   class AudioFile
-    def load(hash)
+    def initialize(hash)
       @name = hash["name"]
       @volume = hash["volume"]
       @pitch = hash["pitch"]
@@ -326,7 +492,7 @@ module RPG
           armor4: @armor4,
           attack: @attack,
           skill: @skill,
-          gaurd: @gaurd,
+          guard: @guard,
           item: @item,
           equip: @equip,
         }
@@ -380,7 +546,7 @@ module RPG
         fog_zoom: @fog_zoom,
         fog_sx: @fog_sx,
         fog_sy: @fog_sy,
-        battler_name: @battler_name,
+        battleback_name: @battleback_name,
         passages: @passages.hash,
         priorities: @priorities.hash,
         terrain_tags: @terrain_tags.hash,

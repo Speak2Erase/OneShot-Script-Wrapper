@@ -80,12 +80,11 @@ paths.each_with_index do |path, i|
   when "MapInfos"
     content = {}
     json.each do |key, value|
-      content[key.to_i] = RPG::MapInfo.new
-      content[key.to_i].load json[key]
+      content[key.to_i] = RPG::MapInfo.new json[key]
     end
     #when "CommonEvents"
   when /^Map\d+$/
-    content = ""
+    content = RPG::Map.new json
     #else
     #  content[name] = []
     #  json.each_with_index do |value|
