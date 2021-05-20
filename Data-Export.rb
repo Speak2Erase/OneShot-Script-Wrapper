@@ -19,6 +19,18 @@ paths.each_with_index do |path, i|
   rxdata = Marshal.load(path.read(mode: "rb"))
   #puts name.to_s
   case name.to_s
+  when "xScripts"
+  when "Scripts"
+  when "Skills"
+    content[:skills] = []
+    rxdata.each_with_index do |value|
+      content[:skills] << value._dump unless value == nil
+    end
+  when "Actors"
+    content[:actors] = []
+    rxdata.each_with_index do |value|
+      content[:actors] << value._dump unless value == nil
+    end
   when "Classes"
     content[:classes] = []
     rxdata.each_with_index do |value|

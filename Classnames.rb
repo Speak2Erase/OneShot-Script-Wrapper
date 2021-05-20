@@ -456,4 +456,75 @@ module RPG
       dump
     end
   end
+
+  class Actor
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        class_id: @class_id,
+        initial_level: @initial_level,
+        final_level: @final_level,
+        exp_basis: @exp_basis,
+        exp_inflation: @exp_inflation,
+        character_name: @character_name,
+        character_hue: @character_hue,
+        battler_name: @battler_name,
+        battler_hue: @battler_hue,
+        parameters: @parameters._dump,
+        weapon_id: @weapon_id,
+        armor1_id: @armor1_id,
+        armor2_id: @armor2_id,
+        armor3_id: @armor3_id,
+        armor4_id: @armor4_id,
+        weapon_fix: @weapon_fix,
+        armor1_fix: @armor1_fix,
+        armor2_fix: @armor2_fix,
+        armor3_fix: @armor3_fix,
+        armor4_fix: @armor4_fix,
+      }
+    end
+  end
+
+  class Skill
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        icon_name: @icon_name,
+        description: @description,
+        scope: @scope,
+        occasion: @occasion,
+        animation1_id: @animation1_id,
+        animation2_id: @animation2_id,
+        menu_se: @menu_se._dump,
+        common_event_id: @common_event_id,
+        sp_cost: @sp_cost,
+        power: @power,
+        atk_f: @atk_f,
+        eva_f: @eva_f,
+        str_f: @str_f,
+        dex_f: @dex_f,
+        agi_f: @agi_f,
+        int_f: @int_f,
+        hit: @hit,
+        pdef_f: @pdef_f,
+        mdef_f: @mdef_f,
+        variance: @variance,
+        element_set: [],
+        plus_state_set: [],
+        minus_state_set: [],
+      }
+      @element_set.each_with_index do |value|
+        dump[:element_set] << value._dump
+      end
+      @plus_state_set.each_with_index do |value|
+        dump[:plus_state_set] << value._dump
+      end
+      @minus_state_set.each_with_index do |value|
+        dump[:minus_state_set] << value._dump
+      end
+      dump
+    end
+  end
 end
