@@ -329,7 +329,7 @@ module RPG
     def _dump
       dump = {
         id: @id,
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         tileset_name: @tileset_name,
         autotile_names: @autotile_names,
         panorama_name: @panorama_name,
@@ -354,7 +354,7 @@ module RPG
     def _dump
       dump = {
         id: @id,
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         animation_id: @animation_id,
         restriction: @restriction,
         nonresistance: @nonresistance,
@@ -461,7 +461,7 @@ module RPG
     def _dump
       dump = {
         id: @id,
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         class_id: @class_id,
         initial_level: @initial_level,
         final_level: @final_level,
@@ -490,9 +490,9 @@ module RPG
     def _dump
       dump = {
         id: @id,
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         icon_name: @icon_name,
-        description: @description,
+        description: @description.force_encoding("iso-8859-1").encode("utf-8"),
         scope: @scope,
         occasion: @occasion,
         animation1_id: @animation1_id,
@@ -523,9 +523,9 @@ module RPG
     def _dump
       dump = {
         id: @id,
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         icon_name: @icon_name,
-        description: @description,
+        description: @description.force_encoding("iso-8859-1").encode("utf-8"),
         scope: @scope,
         occasion: @occasion,
         animation1_id: @animation1_id,
@@ -553,9 +553,9 @@ module RPG
     def _dump
       dump = {
         id: @id,
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         icon_name: @icon_name,
-        description: @description,
+        description: @description.force_encoding("iso-8859-1").encode("utf-8"),
         animation1_id: @animation1_id,
         animation2_id: @animation2_id,
         price: @price,
@@ -577,9 +577,9 @@ module RPG
     def _dump
       dump = {
         id: @id,
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         icon_name: @icon_name,
-        description: @description,
+        description: @description.force_encoding("iso-8859-1").encode("utf-8"),
         kind: @kind,
         price: @price,
         pdef: @pdef,
@@ -615,7 +615,7 @@ module RPG
     def _dump
       dump = {
         id: @id,
-        name: @name,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         battler_name: @battler_name,
         battler_hue: @battler_hue,
         maxhp: @maxhp,
