@@ -5,7 +5,7 @@ class Color
     @red, @green, @blue, @alpha = red, green, blue, alpha
   end
 
-  def _dump
+  def hash
     dump = {
       red: @red,
       green: @green,
@@ -78,7 +78,7 @@ class Table
     end
   end
 
-  def _dump
+  def hash
     dump = {
       dimensions: @num_of_dimensions,
       width: @xsize,
@@ -103,7 +103,7 @@ class Tone
     @red, @green, @blue, @gray = red, green, blue, gray
   end
 
-  def _dump
+  def hash
     dump = {
       red: @red,
       green: @green,
@@ -119,7 +119,7 @@ end
 
 module RPG
   class Event
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -128,13 +128,13 @@ module RPG
         pages: [],
       }
       @pages.each_with_index do |value|
-        dump[:pages] << value._dump
+        dump[:pages] << value.hash
       end
       dump
     end
 
     class Page
-      def _dump
+      def hash
         dump = {
           condition: "",
           graphic: "",
@@ -150,16 +150,16 @@ module RPG
           list: [],
         }
         for i in 0..(@list.size - 1)
-          dump[:list] << @list[i]._dump
+          dump[:list] << @list[i].hash
         end
-        dump[:condition] = @condition._dump
-        dump[:graphic] = @graphic._dump
-        dump[:move_route] = @move_route._dump
+        dump[:condition] = @condition.hash
+        dump[:graphic] = @graphic.hash
+        dump[:move_route] = @move_route.hash
         dump
       end
 
       class Condition
-        def _dump
+        def hash
           dump = {
             switch1_valid: @switch1_valid,
             switch2_valid: @switch2_valid,
@@ -175,7 +175,7 @@ module RPG
       end
 
       class Graphic
-        def _dump
+        def hash
           dump = {
             tile_id: @tile_id,
             character_name: @character_name,
@@ -191,13 +191,13 @@ module RPG
   end
 
   class EventCommand
-    def _dump
+    def hash
       dump = { code: @code,
                indent: @indent,
                parameters: [] }
       @parameters.each_with_index do |value|
         if value.to_s.match(/#<RPG::/) || value.to_s.match(/#<Tone:/) || value.to_s.match(/#<Color:/) || value.to_s.match(/#<Table:/)
-          dump[:parameters] << value._dump
+          dump[:parameters] << value.hash
         elsif value.is_a? String
           dump[:parameters] << value.force_encoding("iso-8859-1").encode("utf-8")
         else
@@ -209,28 +209,28 @@ module RPG
   end
 
   class MoveRoute
-    def _dump
+    def hash
       dump = {
         repeat: @repeat,
         skippable: @skippable,
         list: [],
       }
       @list.each_with_index do |value|
-        dump[:list] << value._dump
+        dump[:list] << value.hash
       end
       dump
     end
   end
 
   class MoveCommand
-    def _dump
+    def hash
       dump = {
         code: @code,
         parameters: [],
       }
       @parameters.each_with_index do |value|
         if value.to_s.match(/#<RPG::/) || value.to_s.match(/#<Tone:/) || value.to_s.match(/#<Color:/) || value.to_s.match(/#<Table:/)
-          dump[:parameters] << value._dump
+          dump[:parameters] << value.hash
         elsif value.is_a? String
           dump[:parameters] << value.force_encoding("iso-8859-1").encode("utf-8")
         else
@@ -242,9 +242,19 @@ module RPG
   end
 
   class MapInfo
-    attr_accessor :parent_id
+    attr_accessor :order
 
-    def _dump
+    def load(hash)
+      #$stderr.puts hash
+      @name = hash["name"]
+      @parent_id = hash["parent_id"]
+      @order = hash["order"]
+      @expanded = hash["expanded"]
+      @scroll_x = hash["scroll_x"]
+      @scroll_y = hash["scroll_y"]
+    end
+
+    def hash
       dump = {
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         parent_id: @parent_id,
@@ -257,7 +267,13 @@ module RPG
   end
 
   class AudioFile
-    def _dump
+    def load(hash)
+      @name = hash["name"]
+      @volume = hash["volume"]
+      @pitch = hash["pitch"]
+    end
+
+    def hash
       dump = {
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
         volume: @volume,
@@ -268,7 +284,7 @@ module RPG
 
   class System
     class Words
-      def _dump
+      def hash
         dump = {
           gold: @gold,
           hp: @hp,
@@ -295,7 +311,7 @@ module RPG
     end
 
     class TestBattler
-      def _dump
+      def hash
         dump = {
           actor_id: @actor_id,
           level: @level,
@@ -310,7 +326,7 @@ module RPG
   end
 
   class CommonEvent
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -319,14 +335,14 @@ module RPG
         list: [],
       }
       @list.each_with_index do |value|
-        dump[:list] << value._dump
+        dump[:list] << value.hash
       end
       dump
     end
   end
 
   class Tileset
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -342,16 +358,16 @@ module RPG
         fog_sx: @fog_sx,
         fog_sy: @fog_sy,
         battler_name: @battler_name,
-        passages: @passages._dump,
-        priorities: @priorities._dump,
-        terrain_tags: @terrain_tags._dump,
+        passages: @passages.hash,
+        priorities: @priorities.hash,
+        terrain_tags: @terrain_tags.hash,
       }
       dump
     end
   end
 
   class State
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -387,28 +403,28 @@ module RPG
 
   class Animation
     class Frame
-      def _dump
+      def hash
         dump = {
           cell_max: @cell_max,
-          cell_data: @cell_data._dump,
+          cell_data: @cell_data.hash,
         }
       end
     end
 
     class Timing
-      def _dump
+      def hash
         dump = {
           frame: @frame,
-          se: @se._dump,
+          se: @se.hash,
           flash_scope: @flash_scope,
-          flash_color: @flash_color._dump,
+          flash_color: @flash_color.hash,
           flash_duration: @flash_duration,
           condition: @condition,
         }
       end
     end
 
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name,
@@ -420,10 +436,10 @@ module RPG
         timings: [],
       }
       @frames.each_with_index do |value|
-        dump[:frames] << value._dump
+        dump[:frames] << value.hash
       end
       @timings.each_with_index do |value|
-        dump[:timings] << value._dump
+        dump[:timings] << value.hash
       end
       dump
     end
@@ -431,7 +447,7 @@ module RPG
 
   class Class
     class Learning
-      def _dump
+      def hash
         dump = {
           level: @level,
           skill_id: @skill_id,
@@ -439,26 +455,26 @@ module RPG
       end
     end
 
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name,
         position: @position,
         weapon_set: @weapon_set,
         armor_set: @armor_set,
-        element_ranks: @element_ranks._dump,
-        state_ranks: @state_ranks._dump,
+        element_ranks: @element_ranks.hash,
+        state_ranks: @state_ranks.hash,
         learnings: [],
       }
       @learnings.each_with_index do |value|
-        dump[:learnings] << value._dump
+        dump[:learnings] << value.hash
       end
       dump
     end
   end
 
   class Actor
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -471,7 +487,7 @@ module RPG
         character_hue: @character_hue,
         battler_name: @battler_name,
         battler_hue: @battler_hue,
-        parameters: @parameters._dump,
+        parameters: @parameters.hash,
         weapon_id: @weapon_id,
         armor1_id: @armor1_id,
         armor2_id: @armor2_id,
@@ -487,7 +503,7 @@ module RPG
   end
 
   class Skill
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -497,7 +513,7 @@ module RPG
         occasion: @occasion,
         animation1_id: @animation1_id,
         animation2_id: @animation2_id,
-        menu_se: @menu_se._dump,
+        menu_se: @menu_se.hash,
         common_event_id: @common_event_id,
         sp_cost: @sp_cost,
         power: @power,
@@ -520,7 +536,7 @@ module RPG
   end
 
   class Item
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -530,7 +546,7 @@ module RPG
         occasion: @occasion,
         animation1_id: @animation1_id,
         animation2_id: @animation2_id,
-        menu_se: @menu_se._dump,
+        menu_se: @menu_se.hash,
         common_event_id: @common_event_id,
         price: @price,
         consumable: @consumable,
@@ -550,7 +566,7 @@ module RPG
   end
 
   class Weapon
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -574,7 +590,7 @@ module RPG
   end
 
   class Armor
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -597,7 +613,7 @@ module RPG
 
   class Enemy
     class Action
-      def _dump
+      def hash
         dump = {
           kind: @kind,
           basic: @basic,
@@ -612,7 +628,7 @@ module RPG
       end
     end
 
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name.force_encoding("iso-8859-1").encode("utf-8"),
@@ -630,8 +646,8 @@ module RPG
         eva: @eva,
         animation1_id: @animation1_id,
         animation2_id: @animation2_id,
-        element_ranks: @element_ranks._dump,
-        state_ranks: @state_ranks._dump,
+        element_ranks: @element_ranks.hash,
+        state_ranks: @state_ranks.hash,
         actions: [],
         exp: @exp,
         gold: @gold,
@@ -641,7 +657,7 @@ module RPG
         treasure_prob: @treasure_prob,
       }
       @actions.each_with_index do |value|
-        dump[:actions] << value._dump
+        dump[:actions] << value.hash
       end
       dump
     end
@@ -649,7 +665,7 @@ module RPG
 
   class Troop
     class Member
-      def _dump
+      def hash
         dump = {
           enemy_id: @enemy_id,
           x: @x,
@@ -662,7 +678,7 @@ module RPG
 
     class Page
       class Condition
-        def _dump
+        def hash
           dump = {
             turn_valid: @turn_valid,
             enemy_valid: @enemy_valid,
@@ -679,20 +695,20 @@ module RPG
         end
       end
 
-      def _dump
+      def hash
         dump = {
-          condition: @condition._dump,
+          condition: @condition.hash,
           span: @span,
           list: [],
         }
         @list.each_with_index do |value|
-          dump[:list] << value._dump
+          dump[:list] << value.hash
         end
         dump
       end
     end
 
-    def _dump
+    def hash
       dump = {
         id: @id,
         name: @name,
@@ -700,10 +716,10 @@ module RPG
         pages: [],
       }
       @members.each_with_index do |value|
-        dump[:members] << value._dump
+        dump[:members] << value.hash
       end
       @pages.each_with_index do |value|
-        dump[:pages] << value._dump
+        dump[:pages] << value.hash
       end
       dump
     end

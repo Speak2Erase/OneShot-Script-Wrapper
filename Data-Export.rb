@@ -43,26 +43,26 @@ paths.each_with_index do |path, i|
       gameover_name: rxdata.instance_variable_get(:@gameover_name),
       battle_transition: rxdata.instance_variable_get(:@battle_transition),
 
-      title_bgm: rxdata.instance_variable_get(:@title_bgm)._dump,
-      battle_bgm: rxdata.instance_variable_get(:@battle_bgm)._dump,
+      title_bgm: rxdata.instance_variable_get(:@title_bgm).hash,
+      battle_bgm: rxdata.instance_variable_get(:@battle_bgm).hash,
 
-      battle_end_me: rxdata.instance_variable_get(:@battle_end_me)._dump,
-      gameover_me: rxdata.instance_variable_get(:@gameover_me)._dump,
+      battle_end_me: rxdata.instance_variable_get(:@battle_end_me).hash,
+      gameover_me: rxdata.instance_variable_get(:@gameover_me).hash,
 
-      cursor_se: rxdata.instance_variable_get(:@cursor_se)._dump,
-      decision_se: rxdata.instance_variable_get(:@decision_se)._dump,
-      cancel_se: rxdata.instance_variable_get(:@cancel_se)._dump,
-      buzzer_se: rxdata.instance_variable_get(:@buzzer_se)._dump,
-      equip_se: rxdata.instance_variable_get(:@equip_se)._dump,
-      shop_se: rxdata.instance_variable_get(:@shop_se)._dump,
-      save_se: rxdata.instance_variable_get(:@save_se)._dump,
-      load_se: rxdata.instance_variable_get(:@load_se)._dump,
-      battle_start_se: rxdata.instance_variable_get(:@battle_start_se)._dump,
-      escape_se: rxdata.instance_variable_get(:@escape_se)._dump,
-      actor_collapse_se: rxdata.instance_variable_get(:@actor_collapse_se)._dump,
-      enemy_collapse_se: rxdata.instance_variable_get(:@enemy_collapse_se)._dump,
+      cursor_se: rxdata.instance_variable_get(:@cursor_se).hash,
+      decision_se: rxdata.instance_variable_get(:@decision_se).hash,
+      cancel_se: rxdata.instance_variable_get(:@cancel_se).hash,
+      buzzer_se: rxdata.instance_variable_get(:@buzzer_se).hash,
+      equip_se: rxdata.instance_variable_get(:@equip_se).hash,
+      shop_se: rxdata.instance_variable_get(:@shop_se).hash,
+      save_se: rxdata.instance_variable_get(:@save_se).hash,
+      load_se: rxdata.instance_variable_get(:@load_se).hash,
+      battle_start_se: rxdata.instance_variable_get(:@battle_start_se).hash,
+      escape_se: rxdata.instance_variable_get(:@escape_se).hash,
+      actor_collapse_se: rxdata.instance_variable_get(:@actor_collapse_se).hash,
+      enemy_collapse_se: rxdata.instance_variable_get(:@enemy_collapse_se).hash,
 
-      words: rxdata.instance_variable_get(:@words)._dump,
+      words: rxdata.instance_variable_get(:@words).hash,
 
       test_battlers: [],
       test_troop_id: rxdata.instance_variable_get(:@test_troop_id),
@@ -75,30 +75,30 @@ paths.each_with_index do |path, i|
       edit_map_id: rxdata.instance_variable_get(:@edit_map_id),
     }
     rxdata.instance_variable_get(:@test_battlers).each_with_index do |val, index|
-      content[:test_battlers] << rxdata.instance_variable_get(:@test_battlers)[index]._dump
+      content[:test_battlers] << rxdata.instance_variable_get(:@test_battlers)[index].hash
     end
   when "MapInfos"
     content = {}
-    mapinfos = rxdata.sort_by { |key, value| value.parent_id }.to_h
+    mapinfos = rxdata.sort_by { |key, value| value.order }.to_h
     mapinfos.each do |key, value|
-      content[key] = value._dump
+      content[key] = value.hash
     end
   when "CommonEvents"
     content[:common_events] = []
     rxdata.each_with_index do |value|
-      content[:common_events] << value._dump unless value == nil
+      content[:common_events] << value.hash unless value == nil
     end
   when /^Map\d+$/
     content[:events] = {}
     events = (rxdata.instance_variable_get(:@events).sort_by { |key| key }.to_h)
     events.each do |key, value|
-      content[:events][key] = value._dump
+      content[:events][key] = value.hash
     end
-    content[:data] = rxdata.instance_variable_get(:@data)._dump
+    content[:data] = rxdata.instance_variable_get(:@data).hash
     content[:autoplay_bgm] = rxdata.instance_variable_get(:@autoplay_bgm)
     content[:autoplay_bgs] = rxdata.instance_variable_get(:@autoplay_bgs)
-    content[:bgm] = rxdata.instance_variable_get(:@bgm)._dump
-    content[:bgs] = rxdata.instance_variable_get(:@bgs)._dump
+    content[:bgm] = rxdata.instance_variable_get(:@bgm).hash
+    content[:bgs] = rxdata.instance_variable_get(:@bgs).hash
     content[:encounter_list] = rxdata.instance_variable_get(:@encounter_list)
     content[:encounter_step] = rxdata.instance_variable_get(:@encounter_step)
     content[:height] = rxdata.instance_variable_get(:@height)
@@ -107,7 +107,7 @@ paths.each_with_index do |path, i|
   else
     content[name] = []
     rxdata.each_with_index do |value|
-      content[name] << value._dump unless value == nil
+      content[name] << value.hash unless value == nil
     end
   end
 

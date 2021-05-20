@@ -158,8 +158,11 @@ if ARGV.size != 1
 end
 
 path = ARGV[0]
-f = File.open(path)
-while !f.eof?
-  m = Marshal.load(f)
-  print m.pretty_inspect
+begin
+  f = File.open(path)
+  while !f.eof?
+    m = Marshal.load(f)
+    print m.pretty_inspect
+  end
+rescue => exception
 end
