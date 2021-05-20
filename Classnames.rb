@@ -324,4 +324,73 @@ module RPG
       dump
     end
   end
+
+  class Tileset
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        tileset_name: @tileset_name,
+        autotile_names: @autotile_names,
+        panorama_name: @panorama_name,
+        panorama_hue: @panorama_hue,
+        fog_name: @fog_name,
+        fog_hue: @fog_hue,
+        fog_opacity: @fog_opacity,
+        fog_blend_type: @fog_blend_type,
+        fog_zoom: @fog_zoom,
+        fog_sx: @fog_sx,
+        fog_sy: @fog_sy,
+        battler_name: @battler_name,
+        passages: @passages._dump,
+        priorities: @priorities._dump,
+        terrain_tags: @terrain_tags._dump,
+      }
+      dump
+    end
+  end
+
+  class Animation
+    class Frame
+      def _dump
+        dump = {
+          cell_max: @cell_max,
+          cell_data: @cell_data._dump,
+        }
+      end
+    end
+
+    class Timing
+      def _dump
+        dump = {
+          frame: @frame,
+          se: @se._dump,
+          flash_scope: @flash_scope,
+          flash_color: @flash_color._dump,
+          flash_duration: @flash_duration,
+          condition: @condition,
+        }
+      end
+    end
+
+    def _dump
+      dump = {
+        id: @id,
+        name: @name,
+        animation_name: @animation_name,
+        animation_hue: @animation_hue,
+        position: @position,
+        frame_max: @frame_max,
+        frames: [],
+        timings: [],
+      }
+      @frames.each_with_index do |value|
+        dump[:frames] << value._dump
+      end
+      @timings.each_with_index do |value|
+        dump[:timings] << value._dump
+      end
+      dump
+    end
+  end
 end

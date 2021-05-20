@@ -19,7 +19,16 @@ paths.each_with_index do |path, i|
   rxdata = Marshal.load(path.read(mode: "rb"))
   #puts name.to_s
   case name.to_s
-
+  when "Animations"
+    content[:animations] = []
+    rxdata.each_with_index do |value|
+      content[:animations] << value._dump unless value == nil
+    end
+  when "Tilesets"
+    content[:tilesets] = []
+    rxdata.each_with_index do |value|
+      content[:tilesets] << value._dump unless value == nil
+    end
   when "System"
     content = {
       magic_number: rxdata.instance_variable_get(:@magic_number),
@@ -74,8 +83,8 @@ paths.each_with_index do |path, i|
     end
   when "CommonEvents"
     content[:common_events] = []
-    rxdata.each_with_index do |value, index|
-      content[:common_events] << rxdata[index]._dump unless rxdata[index] == nil
+    rxdata.each_with_index do |value|
+      content[:common_events] << value._dump unless value == nil
     end
   when /^Map\d+$/
     content[:events] = {}
@@ -94,6 +103,7 @@ paths.each_with_index do |path, i|
     content[:width] = rxdata.instance_variable_get(:@width)
     content[:tileset_id] = rxdata.instance_variable_get(:@tileset_id)
   else
+    $stderr.puts "Unkown file #{name}!"
   end
 
   json = File.open("Data_JSON/" + name.sub_ext(".json").to_s, "wb")
