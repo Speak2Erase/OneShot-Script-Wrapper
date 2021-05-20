@@ -88,7 +88,7 @@ class Table
       elements: [],
     } #.pack("VVVVVv*")
     dump[:elements] = *@elements
-    return dump
+    dump
   end
 
   def self._load(obj)
@@ -127,10 +127,10 @@ module RPG
         y: @y,
         pages: [],
       }
-      for i in 0..(@pages.size - 1)
-        dump[:pages] << @pages[i]._dump
+      @pages.each_with_index do |value|
+        dump[:pages] << value._dump
       end
-      return dump
+      dump
     end
 
     class Page
@@ -155,7 +155,7 @@ module RPG
         dump[:condition] = @condition._dump
         dump[:graphic] = @graphic._dump
         dump[:move_route] = @move_route._dump
-        return dump
+        dump
       end
 
       class Condition
@@ -195,13 +195,13 @@ module RPG
       dump = { code: @code,
                indent: @indent,
                parameters: [] }
-      for i in 0..(@parameters.length - 1)
-        if @parameters[i].to_s.match(/#<RPG::/) || @parameters[i].to_s.match(/#<Tone:/) || @parameters[i].to_s.match(/#<Color:/) || @parameters[i].to_s.match(/#<Table:/)
-          dump[:parameters] << @parameters[i]._dump
-        elsif @parameters[i].is_a? String
-          dump[:parameters] << @parameters[i].force_encoding("iso-8859-1").encode("utf-8")
+      @parameters.each_with_index do |value|
+        if value.to_s.match(/#<RPG::/) || value.to_s.match(/#<Tone:/) || value.to_s.match(/#<Color:/) || value.to_s.match(/#<Table:/)
+          dump[:parameters] << value._dump
+        elsif value.is_a? String
+          dump[:parameters] << value.force_encoding("iso-8859-1").encode("utf-8")
         else
-          dump[:parameters] << @parameters[i]
+          dump[:parameters] << value
         end
       end
       dump
@@ -215,10 +215,10 @@ module RPG
         skippable: @skippable,
         list: [],
       }
-      for i in 0..(@list.length - 1)
-        dump[:list] << @list[i]._dump
+      @list.each_with_index do |value|
+        dump[:list] << value._dump
       end
-      return dump
+      dump
     end
   end
 
@@ -228,11 +228,13 @@ module RPG
         code: @code,
         parameters: [],
       }
-      for i in 0..(@parameters.length - 1)
-        if @parameters[i].to_s.match(/#<RPG::/) || @parameters[i].to_s.match(/#<Tone:/) || @parameters[i].to_s.match(/#<Color:/) || @parameters[i].to_s.match(/#<Table:/)
-          dump[:parameters] << @parameters[i]._dump
+      @parameters.each_with_index do |value|
+        if value.to_s.match(/#<RPG::/) || value.to_s.match(/#<Tone:/) || value.to_s.match(/#<Color:/) || value.to_s.match(/#<Table:/)
+          dump[:parameters] << value._dump
+        elsif value.is_a? String
+          dump[:parameters] << value.force_encoding("iso-8859-1").encode("utf-8")
         else
-          dump[:parameters] << @parameters[i]
+          dump[:parameters] << value
         end
       end
       dump
@@ -261,6 +263,65 @@ module RPG
         volume: @volume,
         pitch: @pitch,
       }
+    end
+  end
+
+  class System
+    class Words
+      def _dump
+        dump = {
+          gold: @gold,
+          hp: @hp,
+          sp: @sp,
+          str: @str,
+          dex: @dex,
+          agi: @agi,
+          int: @int,
+          atk: @atk,
+          pdef: @pdef,
+          mdef: @mdef,
+          weapon: @weapon,
+          armor1: @armor1,
+          armor2: @armor2,
+          armor3: @armor3,
+          armor4: @armor4,
+          attack: @attack,
+          skill: @skill,
+          gaurd: @gaurd,
+          item: @item,
+          equip: @equip,
+        }
+      end
+    end
+
+    class TestBattler
+      def _dump
+        dump = {
+          actor_id: @actor_id,
+          level: @level,
+          weapon_id: @weapon_id,
+          armor1_id: @armor1_id,
+          armor2_id: @armor2_id,
+          armor3_id: @armor3_id,
+          armor4_id: @armor4_id,
+        }
+      end
+    end
+  end
+
+  class CommonEvent
+    def _dump
+      dump = {
+        id: @id,
+        name: @name.force_encoding("iso-8859-1").encode("utf-8"),
+        trigger: @trigger,
+        switch_id: @switch_id,
+        list: [],
+      }
+      @list.each_with_index do |value|
+        dump[:list] << value._dump
+      end
+      dump
     end
   end
 end
