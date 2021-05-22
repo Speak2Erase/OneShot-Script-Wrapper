@@ -6,15 +6,17 @@ def export
   require "ruby-progressbar"
   require "fileutils"
   require "pathname"
+  require "readline"
   require_relative "Classnames"
   require_relative "Script-Handler"
 
+  window_size = (Readline.get_screen_size[1] - 1).clamp(0, 500)
   progress = ProgressBar.create(
     format: "%a /%e |%B| %p%% %c/%C %r files/sec %t",
     starting_at: 0,
     total: nil,
     output: $stderr,
-    length: 150,
+    length: window_size,
     title: "Exported",
     remainder_mark: "\e[0;30m█\e[0m",
     progress_mark: "█",
