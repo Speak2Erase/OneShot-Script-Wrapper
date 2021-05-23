@@ -2,23 +2,32 @@
 $rubyArgs = @('.\data-extractor.rb', 'import') 
 ruby $rubyArgs
 
-$fileWatcher = New-Object System.IO.FileSystemWatcher
-$fileWatcher.Path = ".\Data\"
-$fileWatcher.Filter = "*.rxdata";
-$fileWatcher.IncludeSubdirectories = $true
-$fileWatcher.EnableRaisingEvents = $true
+$Path = ".\Data"
+$FileFilter = '*.rxdata'
 
-$action = {
-    Write-Host "Changes detected, exporting Data..."
-    $rubyArgs = @('.\data-extractor.rb', 'export') 
-    ruby $rubyArgs
-    Get-Event | Remove-Event
+$Timeout = 1000
+$ChangeTypes = [System.IO.WatcherChangeTypes]::Created, [System.IO.WatcherChangeTypes]::Deleted, [System.IO.WatcherChangeTypes]::Changed, [System.IO.WatcherChangeTypes]::Renamed
+
+$IncludeSubfolders = $true
+$AttributeFilter = [IO.NotifyFilters]::FileName, [IO.NotifyFilters]::LastWrite
+
+$watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $Path, $FileFilter -Property @{
+    IncludeSubdirectories = $IncludeSubfolders
+    NotifyFilter = $AttributeFilter
+  }
+function Do_Stuff {
+    param (
+        [Parameter(Mandatory)]
+        [System.IO.WaitForChangedResult]
+        $ChangeInformation
+    )
+    Write-Warning 'Change detected:'
+    $ChangeInformation | Out-String | Write-Host -ForegroundColor DarkYellow
+    #Write-Host "Changes detected, exporting Data..."
+    #$rubyArgs = @('.\data-extractor.rb', 'export') 
+    #ruby $rubyArgs
 }
 
-Register-ObjectEvent $filewatcher “Created” -Action $action
-Register-ObjectEvent $filewatcher “Changed” -Action $action 
-Register-ObjectEvent $filewatcher “Deleted” -Action $action 
-Register-ObjectEvent $filewatcher “Renamed” -Action $action 
 
 $rpgmakerpath = Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Classes\RPGXP.Project\shell\open\command\' -Name '(Default)'
 $rpgmakerpath = $rpgmakerpath -replace '"%1"', ''
@@ -31,12 +40,16 @@ Start-Sleep(1)
 $rpgmakeropen = get-process "RPGXP" -ErrorAction SilentlyContinue
 while($Null -ne $rpgmakeropen) {
     $rpgmakeropen = get-process "RPGXP" -ErrorAction SilentlyContinue
+    $result = $watcher.WaitForChanged($ChangeTypes, $Timeout)
+    # if there was a timeout, continue monitoring:
+    if ($result.TimedOut) { continue }
+    Do_Stuff -Change $result
 }
 
 Write-Output "RPG Maker closed"
 
 Get-EventSubscriber | Unregister-Event
-$fileWatcher.EnableRaisingEvents = $false
+
 $fileWatcher.Dispose()
 
 $rubyArgs = @('.\data-extractor.rb', 'import') 
