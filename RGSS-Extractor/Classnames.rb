@@ -380,7 +380,7 @@ module RPG
       @encounter_step = hash["encounter_step"]
       @data = Table.new(hash["data"], false)
       @events = {}
-      events = hash["events"] #.sort_by { |key| key }.to_h
+      events = hash["events"].sort_by { |key| key }.to_h
       events.each do |key, value|
         @events[key.to_i] = RPG::Event.new value
       end
@@ -400,7 +400,7 @@ module RPG
         events: {},
         data: @data.hash,
       }
-      events = @events #.sort_by { |key| key }.to_h
+      events = @events.sort_by { |key| key }.to_h
       events.each do |key, value|
         dump[:events][key] = value.hash
       end
