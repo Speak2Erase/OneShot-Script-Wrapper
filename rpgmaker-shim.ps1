@@ -1,16 +1,12 @@
 $rubyArgs = @('.\data-extractor.rb', 'import') #? Import Data_JSON to Data
 ruby $rubyArgs
-
 $Path = ".\Data"
 $FileFilter = '*.rxdata'
-
 #? Create watcher attributes
 $Timeout = 1000
 $ChangeTypes = [System.IO.WatcherChangeTypes]::Created, [System.IO.WatcherChangeTypes]::Deleted, [System.IO.WatcherChangeTypes]::Changed, [System.IO.WatcherChangeTypes]::Renamed
-
 $IncludeSubfolders = $true
 $AttributeFilter = [IO.NotifyFilters]::FileName, [IO.NotifyFilters]::LastWrite
-
 #? Spawn watcher
 $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $Path, $FileFilter -Property @{
     IncludeSubdirectories = $IncludeSubfolders
@@ -27,17 +23,13 @@ function Do_Stuff {
     $rubyArgs = @('.\data-extractor.rb', 'export') #? Export to Data Data_JSON
     ruby $rubyArgs
 }
-
 #? Get path to RPG Maker XP
 $rpgmakerpath = Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Classes\RPGXP.Project\shell\open\command\' -Name '(Default)'
 $rpgmakerpath = $rpgmakerpath -replace '"%1"', ''
 $rpgmakerpath = $rpgmakerpath -replace '"', ''
-
 Write-Output "Opening RPG Maker"
-
 Start-Process $rpgmakerpath '.\game.rxproj' -NoNewWindow #? Start RPG Maker
 Start-Sleep(1) #? Wait for it to open
-
 while($true) {
     $rpgmakeropen = get-process "RPGXP" -ErrorAction SilentlyContinue #? Check if it's open
     if ($Null -eq $rpgmakeropen) {
@@ -48,12 +40,8 @@ while($true) {
     if ($result.TimedOut) { continue }
     Do_Stuff -Change $result #? Called only if no timeout (i.e something happened)
 }
-
 Write-Output "RPG Maker closed"
-
 $watcher.Dispose() #? Dispose of watcher
-
 $rubyArgs = @('.\data-extractor.rb', 'export') #? Export to Data Data_JSON
 ruby $rubyArgs
-
 #TODO: Call ruby stuff in oneline
