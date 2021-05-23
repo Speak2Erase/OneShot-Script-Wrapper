@@ -273,13 +273,15 @@ module RPG
       @parameters = []
       hash["parameters"].each_with_index do |value|
         if value.is_a?(Hash)
-          if value["volume"] != nil
+          if hash["code"] == 250 || hash["code"] == 249 || hash["code"] == 241 || hash["code"] == 242 || hash["code"] == 245
             @parameters << RPG::AudioFile.new(value)
-          elsif value["gray"] != nil
+          elsif hash["code"] == 223 || hash["code"] == 234 || hash["code"] == 205
             @parameters << Tone.new(value)
-          elsif value["alpha"] != nil
+          elsif hash["code"] == 224
             @parameters << Color.new(value)
-          elsif value["repeat"] != nil
+          elsif hash["code"] == 509
+            @parameters << RPG::MoveCommand.new(value)
+          elsif hash["code"] == 209
             @parameters << RPG::MoveRoute.new(value)
           end
         else
