@@ -50,7 +50,7 @@ Write-Output "RPG Maker closed"
 
 Get-EventSubscriber | Unregister-Event
 
-$fileWatcher.Dispose()
+$watcher.Dispose()
 
 $rubyArgs = @('.\data-extractor.rb', 'import') 
 ruby $rubyArgs
