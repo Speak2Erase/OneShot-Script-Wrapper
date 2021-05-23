@@ -12,7 +12,7 @@ $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $Path, $FileF
     IncludeSubdirectories = $IncludeSubfolders
     NotifyFilter = $AttributeFilter
   }
-function Do_Stuff {
+function Export {
     param (
         [Parameter(Mandatory)]
         [System.IO.WaitForChangedResult]
@@ -38,7 +38,7 @@ while($true) {
     $result = $watcher.WaitForChanged($ChangeTypes, $Timeout) #? Get result of file watcher
     #? Continue if no timeout
     if ($result.TimedOut) { continue }
-    Do_Stuff -Change $result #? Called only if no timeout (i.e something happened)
+    Export -Change $result #? Called only if no timeout (i.e something happened)
 }
 Write-Output "RPG Maker closed"
 $watcher.Dispose() #? Dispose of watcher
