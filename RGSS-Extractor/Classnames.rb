@@ -590,7 +590,7 @@ module RPG
     def initialize(hash)
       hash.each do |key, value|
         if value.is_a?(Hash)
-          eval("@#{key.to_s}=Table.new(value)")
+          eval("@#{key.to_s}=Table.new(value, false)")
         else
           eval("@#{key.to_s}=value")
         end
@@ -666,7 +666,7 @@ module RPG
     class Frame
       def initialize(hash)
         @cell_max = hash["cell_max"]
-        @cell_data = Table.new hash["cell_data"]
+        @cell_data = Table.new hash["cell_data"], false
       end
 
       def hash
@@ -744,8 +744,8 @@ module RPG
       @position = hash["position"]
       @weapon_set = hash["weapon_set"]
       @armor_set = hash["armor_set"]
-      @element_ranks = Table.new hash["element_ranks"]
-      @state_ranks = Table.new hash["state_ranks"]
+      @element_ranks = Table.new hash["element_ranks"], false
+      @state_ranks = Table.new hash["state_ranks"], false
       @learnings = []
       hash["learnings"].each_with_index do |value|
         @learnings << RPG::Class::Learning.new(value)
@@ -788,7 +788,7 @@ module RPG
     def initialize(hash)
       hash.each do |key, value|
         if value.is_a?(Hash)
-          eval("@#{key.to_s}=Table.new(value)") #! We know there is only one hash in here so this is fine
+          eval("@#{key.to_s}=Table.new(value, false)") #! We know there is only one hash in here so this is fine
         else
           eval("@#{key.to_s}=value")
         end
@@ -990,7 +990,7 @@ module RPG
     def initialize(hash)
       hash.each do |key, value|
         if value.is_a?(Hash)
-          eval("@#{key.to_s}=Table.new(value)")
+          eval("@#{key.to_s}=Table.new(value, false)")
         elsif value.is_a?(Array)
           @actions = []
           value.each_with_index do |value|
