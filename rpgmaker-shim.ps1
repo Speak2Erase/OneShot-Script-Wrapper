@@ -21,11 +21,10 @@ function Do_Stuff {
         [System.IO.WaitForChangedResult]
         $ChangeInformation
     )
+    Start-Sleep(0.1) # Wait for RPG Maker to finish writing
     Write-Warning 'Change detected:'
-    $ChangeInformation | Out-String | Write-Host -ForegroundColor DarkYellow
-    #Write-Host "Changes detected, exporting Data..."
-    #$rubyArgs = @('.\data-extractor.rb', 'export') 
-    #ruby $rubyArgs
+    $rubyArgs = @('.\data-extractor.rb', 'export')
+    ruby $rubyArgs
 }
 
 
@@ -38,8 +37,11 @@ Write-Output "Opening RPG Maker"
 Start-Process $rpgmakerpath '.\game.rxproj' -NoNewWindow
 Start-Sleep(1)
 $rpgmakeropen = get-process "RPGXP" -ErrorAction SilentlyContinue
-while($Null -ne $rpgmakeropen) {
+while($true) {
     $rpgmakeropen = get-process "RPGXP" -ErrorAction SilentlyContinue
+    if ($Null -eq $rpgmakeropen) {
+        break #Break from loop of rpg maker is closed
+    }
     $result = $watcher.WaitForChanged($ChangeTypes, $Timeout)
     # if there was a timeout, continue monitoring:
     if ($result.TimedOut) { continue }
