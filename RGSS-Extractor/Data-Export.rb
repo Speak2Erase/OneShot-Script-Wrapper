@@ -35,15 +35,17 @@ def export
     case name.to_s
     when "xScripts"
       rpgscript("./", "./Scripts", true)
+      content[:version] = VERSION
     when "Scripts"
+      content[:version] = VERSION
     when "System"
       content = rxdata.hash
       content[:version] = VERSION
     when "MapInfos"
-      content = {}
+      content = { mapinfos: {} }
       mapinfos = rxdata.sort_by { |key, value| value.order }.to_h
       mapinfos.each do |key, value|
-        content[key] = value.hash
+        content[:mapinfos][key] = value.hash
       end
       content[:version] = VERSION
     when /^Map\d+$/

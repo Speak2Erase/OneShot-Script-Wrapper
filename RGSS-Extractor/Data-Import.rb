@@ -31,7 +31,9 @@ def import
 
     name = path.basename(".json")
     json = Oj.load path.read(mode: "rb")
-    #puts name.to_s
+
+    puts "\n\e[33;1mWARNING: Incompatible version format in #{name.to_s}!\e[0m\n" if json["version"] != VERSION
+
     case name.to_s
     when "xScripts"
       rpgscript("./", "./Scripts")
@@ -42,7 +44,7 @@ def import
       content = RPG::System.new(json)
     when "MapInfos"
       content = {}
-      json.each do |key, value|
+      json["mapinfos"].each do |key, value|
         content[key.to_i] = RPG::MapInfo.new(value) unless key == "version"
       end
       #when "CommonEvents"
