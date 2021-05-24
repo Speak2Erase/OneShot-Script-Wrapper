@@ -322,7 +322,11 @@ module RPG
         if value.to_s.match(/#<RPG::/) || value.to_s.match(/#<Tone:/) || value.to_s.match(/#<Color:/) || value.to_s.match(/#<Table:/)
           dump[:parameters] << value.hash
         elsif value.is_a? String
-          dump[:parameters] << value.force_encoding("iso-8859-1").encode("utf-8")
+          if value.encoding.to_s != "UTF-8"
+            dump[:parameters] << value.force_encoding("iso-8859-1").encode("utf-8")
+          else
+            dump[:parameters] << value
+          end
         else
           dump[:parameters] << value
         end
