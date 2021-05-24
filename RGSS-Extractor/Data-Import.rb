@@ -39,77 +39,20 @@ def import
       return
     when "Scripts"
     when "System"
-      content = RPG::System.new json
+      content = RPG::System.new(json)
     when "MapInfos"
       content = {}
       json.each do |key, value|
-        content[key.to_i] = RPG::MapInfo.new json[key]
+        content[key.to_i] = RPG::MapInfo.new(value) unless key == "version"
       end
       #when "CommonEvents"
     when /^Map\d+$/
       content = RPG::Map.new json
-
       #! All files that contain an array of subclasses start with nil since they start from 1, not 0
-
-    when "CommonEvents"
+    else
       content = [nil]
-      json["commonevents"].each_with_index do |value|
-        content << RPG::CommonEvent.new(value)
-      end
-    when "Tilesets"
-      content = [nil]
-      json["tilesets"].each_with_index do |value|
-        content << RPG::Tileset.new(value)
-      end
-    when "Animations"
-      content = [nil]
-      json["animations"].each_with_index do |value|
-        content << RPG::Animation.new(value)
-      end
-    when "States"
-      content = [nil]
-      json["states"].each_with_index do |value|
-        content << RPG::State.new(value)
-      end
-    when "Actors"
-      content = [nil]
-      json["actors"].each_with_index do |value|
-        content << RPG::Actor.new(value)
-      end
-    when "Skills"
-      content = [nil]
-      json["skills"].each_with_index do |value|
-        content << RPG::Skill.new(value)
-      end
-    when "Items"
-      content = [nil]
-      json["items"].each_with_index do |value|
-        content << RPG::Item.new(value)
-      end
-    when "Weapons"
-      content = [nil]
-      json["weapons"].each_with_index do |value|
-        content << RPG::Weapon.new(value)
-      end
-    when "Armors"
-      content = [nil]
-      json["armors"].each_with_index do |value|
-        content << RPG::Armor.new(value)
-      end
-    when "Classes"
-      content = [nil]
-      json["classes"].each_with_index do |value|
-        content << RPG::Class.new(value)
-      end
-    when "Enemies"
-      content = [nil]
-      json["enemies"].each_with_index do |value|
-        content << RPG::Enemy.new(value)
-      end
-    when "Troops"
-      content = [nil]
-      json["troops"].each_with_index do |value|
-        content << RPG::Troop.new(value)
+      json[name.to_s.downcase].each_with_index do |value, index|
+        eval("content << RPG::#{name.to_s.singularize}.new(value)")
       end
     end
 
@@ -117,5 +60,21 @@ def import
     rxdata.puts Marshal.dump(content)
 
     progress.increment
+  end
+end
+
+class String
+  def singularize
+    if self.end_with? "ies"
+      self.delete_suffix("ies") + "y"
+    elsif self.end_with? "tes"
+      self.delete_suffix("s")
+    elsif self.end_with? "es"
+      self.delete_suffix("es")
+    elsif self.end_with? "s"
+      self.delete_suffix("s")
+    else
+      self
+    end
   end
 end
