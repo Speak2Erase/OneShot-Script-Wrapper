@@ -38,19 +38,23 @@ def export
     when "Scripts"
     when "System"
       content = rxdata.hash
+      content[:version] = VERSION
     when "MapInfos"
       content = {}
       mapinfos = rxdata.sort_by { |key, value| value.order }.to_h
       mapinfos.each do |key, value|
         content[key] = value.hash
       end
+      content[:version] = VERSION
     when /^Map\d+$/
       content = rxdata.hash
+      content[:version] = VERSION
     else
       content[name.to_s.downcase] = []
       rxdata.each_with_index do |value|
         content[name.to_s.downcase] << value.hash unless value == nil
       end
+      content[:version] = VERSION
     end
 
     json = File.open("./Data_JSON/" + name.sub_ext(".json").to_s, "wb")
