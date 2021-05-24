@@ -44,7 +44,18 @@ class Table
     @ysize = hash["height"]
     @zsize = hash["depth"]
     @num_of_elements = hash["size"]
-    @elements = hash["elements"]
+    @elements = []
+    if @num_of_dimensions > 1 && !resize
+      hash["elements"].each_with_index do |value, uindex|
+        @elements << []
+        value.each_with_index do |value, index|
+          @elements[uindex] << eval(value) #!Yep, you can do this to turn strings back into arrays
+        end
+      end
+    else
+      @elements = hash["elements"]
+    end
+
     if resize
       if @num_of_dimensions > 1
         if @xsize > 1
@@ -72,7 +83,18 @@ class Table
       size: @num_of_elements,
       elements: [],
     } #.pack("VVVVVv*")
-    dump[:elements] = *@elements
+
+    if @num_of_dimensions > 1
+      @elements.each_with_index do |value, uindex|
+        dump[:elements] << []
+        value.each_with_index do |value, index|
+          dump[:elements][uindex] << value.to_s
+        end
+      end
+    else
+      dump[:elements] = *@elements
+    end
+
     dump
   end
 
