@@ -9,15 +9,6 @@ See:
 
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies
 
-You will also need several ruby gems. You can aquire them by using ``gem install <gem>``.
-```
-json
-ruby-progressbar
-fileutils
-pathname
-readline
-zlib
-oj
-```
+You will also need the RMXP-Extractor gem. You can get it with ``gem install rmxp_extractor``
 
 After you finish with those, download the latest release from https://github.com/Speak2Erase/OneShot-Script-Wrapper/releases/latest, and place it inside your OneShot folder.
