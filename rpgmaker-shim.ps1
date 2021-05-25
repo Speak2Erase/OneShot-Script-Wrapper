@@ -1,5 +1,5 @@
-$rubyArgs = @('.\data-extractor.rb', 'import') #? Import Data_JSON to Data
-ruby $rubyArgs
+$rubyArgs = @( 'import') #? Import Data_JSON to Data
+rmxp_extractor $rubyArgs
 $Path = ".\Data"
 $FileFilter = '*.rxdata'
 #? Create watcher attributes
@@ -20,8 +20,8 @@ function Export {
     )
     Start-Sleep(0.1) #! Wait for RPG Maker to finish writing, because I can't think of a better way to go about this
     Write-Warning 'Change detected:'
-    $rubyArgs = @('.\data-extractor.rb', 'export') #? Export to Data Data_JSON
-    ruby $rubyArgs
+    $rubyArgs = @('export') #? Export to Data Data_JSON
+    rmxp_extractor $rubyArgs
 }
 #? Get path to RPG Maker XP
 $rpgmakerpath = Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Classes\RPGXP.Project\shell\open\command\' -Name '(Default)'
@@ -42,6 +42,6 @@ while($true) {
 }
 Write-Output "RPG Maker closed"
 $watcher.Dispose() #? Dispose of watcher
-$rubyArgs = @('.\data-extractor.rb', 'export') #? Export to Data Data_JSON
-ruby $rubyArgs
+$rubyArgs = @('export') #? Export to Data Data_JSON
+rmxp_extractor $rubyArgs
 #TODO: Call ruby stuff in oneline
